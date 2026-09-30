@@ -1,10 +1,10 @@
-"""OpenAI Realtime relay for the unchanged ThirtyTutors browser protocol.
+"""OpenAI Realtime relay for the ThirtyTutors-derived browser protocol.
 
 The browser still speaks the exact ThirtyTutors websocket protocol:
 init/start_turn/audio_chunk/turn_complete and hands-free/quiz messages.
 This module translates that protocol to OpenAI Realtime events, so the
 frontend, avatar, profiles, quizzes, memory, statistics, and speaker
-verification can remain intact while Gemini Live is replaced.
+verification can remain intact while the Gemini Live backend is replaced by OpenAI Realtime.
 """
 
 from __future__ import annotations
