@@ -50,6 +50,7 @@ let nextPlaybackTime = 0;
 // set (the avatar keeps existing even when the drawer is closed again, so
 // there's no need to switch back).
 let avatarAudioSink = null; // { audioCtx, headaudio }
+const activePlaybackSources = new Set();
 
 function registerAvatarAudioSink(audioCtx, headaudio) {
   avatarAudioSink = { audioCtx, headaudio };
@@ -164,9 +165,21 @@ function playAudioChunk(b64data) {
   gainNode.gain.setValueAtTime(1, startAt + buffer.duration - fadeS);
   gainNode.gain.linearRampToValueAtTime(0, startAt + buffer.duration);
 
+  activePlaybackSources.add(source);
+  source.addEventListener('ended', () => activePlaybackSources.delete(source), { once: true });
   source.start(startAt);
   nextPlaybackTime = startAt + buffer.duration;
 }
+
+function stopPlaybackNow() {
+  for (const source of activePlaybackSources) {
+    try { source.stop(); } catch (_) {}
+  }
+  activePlaybackSources.clear();
+  const ctx = avatarAudioSink ? avatarAudioSink.audioCtx : playbackContext;
+  if (ctx) nextPlaybackTime = ctx.currentTime;
+}
+window.stopPlaybackNow = stopPlaybackNow;
 
 function isTutorSpeaking() {
   const ctx = avatarAudioSink ? avatarAudioSink.audioCtx : playbackContext;
@@ -357,6 +370,7 @@ async function startRecording() {
   pcmBuffer = [];
   pcmBufferedSamples = 0;
   pendingReplayChunks = []; // starting a new turn - any earlier undelivered turn is moot now
+  if (window.stopPlaybackNow) window.stopPlaybackNow();
   isRecording = true;
   ws.send(JSON.stringify({ type: 'start_turn' }));
   talkBtn.classList.add('recording');
