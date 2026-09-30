@@ -17,24 +17,15 @@ from platformdirs import user_data_dir
 DEFAULT_DIFFICULTY = "intermediate"
 
 DEFAULT_VOICE = "Kore"
-DEFAULT_NATIVE_LANGUAGE = "English"
-DEFAULT_TARGET_LANGUAGE = "Polish"
+DEFAULT_NATIVE_LANGUAGE = "Arabic"
+DEFAULT_TARGET_LANGUAGE = "American English"
 
-# Non-realtime text model used only for periodic rolling-summary folding
-# (memory.py / summarize_conversation in summarization.py) - cheap
-# free-tier text calls, separate from the Live API models used for the
-# actual conversation. gemini-2.5-flash's free tier is capped at 20 RPD,
-# too low for a summarization call firing every ~15 turns across active
-# conversations; gemini-3.1-flash-lite gives 500 RPD instead and is plenty
-# for this task.
+# Non-realtime text model used for periodic rolling-summary folding.
+# This is intentionally separate from the Realtime audio model.
 SUMMARY_MODEL = "gpt-5.6-luna"
 
-# Official voice names + descriptors are from Google's docs
-# (ai.google.dev/gemini-api/docs/speech-generation), which label voices by
-# tone/character. Gender is not an official Google label - this mapping is
-# a manual categorization for the UI's gender-first picker, not a claim
-# Google makes. pitch is a supplementary manual categorization (same
-# spirit as gender), shown alongside descriptor on the avatar-select page.
+# The original ThirtyTutors persona catalog is preserved for the UI. The
+# gender/pitch fields are app-level persona labels, not OpenAI metadata.
 VOICE_OPTIONS = [
     {
         "name": "Zephyr",
@@ -250,63 +241,44 @@ VOICE_OPTIONS = [
     },
 ]
 
-# Voice name used when calling the Google Live API. Most entries use their
-# own `name`, but a few aliases map to a different underlying Google voice
-# so the avatar's photo and local sample stay intact while the API still
-# receives a valid voice identifier.
-# Keep the complete ThirtyTutors avatar library, but route each persona to
-# an American-English GPT-Live voice. Gleam and Meridian are North American
-# voices in GPT-Live; Delta and Cinder provide optional Southern-U.S. variety.
-_GPT_LIVE_FEMALE_VOICES = ("gleam", "delta")
-_GPT_LIVE_MALE_VOICES = ("meridian", "cinder")
+# Voice name used by OpenAI Realtime. The 30 ThirtyTutors avatar/persona
+# entries are preserved; each persona is mapped to one of OpenAI's current
+# built-in Realtime voices so the existing avatar picker remains intact.
+_OPENAI_FEMALE_VOICES = ("marin", "coral", "sage", "shimmer", "cedar")
+_OPENAI_MALE_VOICES = ("alloy", "ash", "ballad", "echo", "verse")
 _voice_f_index = 0
 _voice_m_index = 0
 VOICE_NAME_TO_API = {}
 for _voice in VOICE_OPTIONS:
     if _voice.get("gender") == "Female":
-        VOICE_NAME_TO_API[_voice["name"]] = _GPT_LIVE_FEMALE_VOICES[
-            _voice_f_index % len(_GPT_LIVE_FEMALE_VOICES)
+        VOICE_NAME_TO_API[_voice["name"]] = _OPENAI_FEMALE_VOICES[
+            _voice_f_index % len(_OPENAI_FEMALE_VOICES)
         ]
         _voice_f_index += 1
     else:
-        VOICE_NAME_TO_API[_voice["name"]] = _GPT_LIVE_MALE_VOICES[
-            _voice_m_index % len(_GPT_LIVE_MALE_VOICES)
+        VOICE_NAME_TO_API[_voice["name"]] = _OPENAI_MALE_VOICES[
+            _voice_m_index % len(_OPENAI_MALE_VOICES)
         ]
         _voice_m_index += 1
 
 
 def get_api_voice_name(voice_name: str) -> str:
-    return VOICE_NAME_TO_API.get(voice_name, voice_name)
+    return VOICE_NAME_TO_API.get(voice_name, "marin")
 
 
-# Live API model choices. Rate limits are what's visible on the free tier as
-# of mid-2026 and can change - shown in the UI so the choice is informed.
-#
-# gemini-2.5-flash-native-audio-latest was removed entirely (not just
-# deprioritized) after most of the duplicate/repeated-response issues
-# logged in design_plans/issues.md turned out to happen on it specifically
-# - see that file for the actual incidents. With only one entry here,
-# live_session.py's fallback_model selection naturally computes to None
-# (nothing else left to fall back to), so this also stops it from ever
-# being used as a silent fallback, not just as a direct UI choice. See
-# profiles_store.migrate_legacy_model_name for what happens to
-# conversations that were already created while it was still an option.
-# GPT-Live 1 is the primary voice frontend. GPT-6 Sol is used through
-# Responses delegation for the strongest tutoring/correction path.
-GPT_LIVE_BACKEND_MODEL = "gpt-6-sol"
-GPT_LIVE_FAST_BACKEND_MODEL = "gpt-6-luna"
-
+# OpenAI Realtime model choices. Keep the IDs identical to the API model IDs
+# so the selected value can be sent directly to the Realtime websocket.
 MODEL_OPTIONS = [
     {
-        "id": "gpt-live-1",
-        "label": "GPT-Live 1 + GPT-6 Sol (Best)",
-        "rate_limit_note": "Premier full-duplex voice with strongest delegated tutor reasoning",
+        "id": "gpt-realtime-2.1",
+        "label": "GPT-Realtime-2.1 (Best)",
+        "rate_limit_note": "Current OpenAI Realtime model for natural speech-to-speech tutoring",
         "supports_affective_dialog": True,
     },
     {
-        "id": "gpt-live-1-fast",
-        "label": "GPT-Live 1 + GPT-6 Luna (Fast)",
-        "rate_limit_note": "Premier full-duplex voice with lower-latency delegated reasoning",
+        "id": "gpt-realtime-2.1-mini",
+        "label": "GPT-Realtime-2.1 Mini (Fast)",
+        "rate_limit_note": "Lower-cost Realtime option for faster practice sessions",
         "supports_affective_dialog": True,
     },
 ]
