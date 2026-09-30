@@ -6,8 +6,6 @@ memory.SUMMARY_FOLD_EVERY_N_TURNS turns) and once more on disconnect.
 import json
 import traceback
 
-from google.genai import types
-
 from . import memory, retry
 from .constants import SUMMARY_MODEL
 from .profiles_store import get_client_for_key
@@ -69,13 +67,12 @@ def summarize_conversation(conversation_id: str, student_name: str, api_key: str
             f"NEW TURNS:\n{transcript_lines}"
         )
         response = retry.call_with_retry(
-            client.models.generate_content,
+            client.responses.create,
             model=SUMMARY_MODEL,
-            contents=prompt,
-            config=types.GenerateContentConfig(response_mime_type="application/json"),
+            input=prompt,
             label=f"summarize_conversation/{conversation_id}",
         )
-        raw_text = (getattr(response, "text", None) or "").strip()
+        raw_text = (getattr(response, "output_text", None) or "").strip()
         if not raw_text:
             return
 
