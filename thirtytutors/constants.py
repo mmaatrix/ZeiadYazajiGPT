@@ -266,6 +266,290 @@ def get_api_voice_name(voice_name: str) -> str:
     return VOICE_NAME_TO_API.get(voice_name, "marin")
 
 
+# OpenAI Realtime model choices. The flagship model is first, matching
+# ThirtyTutors' primary-model-first behavior; the mini model is the fallback.
+MODEL_OPTIONS = [
+    {
+        "id": "gpt-realtime-2.1",
+        "label": "GPT-Realtime-2.1",
+        "rate_limit_note": "Current OpenAI Realtime flagship speech-to-speech model",
+        "supports_affective_dialog": True,
+    },
+    {
+        "id": "gpt-realtime-2.1-mini",
+        "label": "GPT-Realtime-2.1 Mini (Fallback)",
+        "rate_limit_note": "Lower-cost OpenAI Realtime fallback",
+        "supports_affective_dialog": True,
+    },
+]
+option lists, defaults, and file
+paths shared across the app. No logic lives here - just data other
+modules import.
+
+Tutor prompt text and tool schemas do NOT live here anymore - see
+tutor_instructions.py (everything sent to the model as system_instruction)
+and tutor_tools.py (the set_mood/start_quiz tool schemas) instead. This
+file keeps DEFAULT_DIFFICULTY only, since routes/profile code needs a
+plain config default independent of any instruction text.
+"""
+
+import shutil
+from pathlib import Path
+
+from platformdirs import user_data_dir
+
+DEFAULT_DIFFICULTY = "intermediate"
+
+DEFAULT_VOICE = "Kore"
+DEFAULT_NATIVE_LANGUAGE = "Arabic"
+DEFAULT_TARGET_LANGUAGE = "American English"
+
+# Non-realtime text model used for periodic rolling-summary folding.
+# This is intentionally separate from the Realtime audio model.
+SUMMARY_MODEL = "gpt-5.6-sol"
+
+# The original ThirtyTutors persona catalog is preserved for the UI. The
+# gender/pitch fields are app-level persona labels, not OpenAI metadata.
+VOICE_OPTIONS = [
+    {
+        "name": "Zephyr",
+        "descriptor": "Bright",
+        "gender": "Female",
+        "pitch": "High",
+        "alias": "Mila",
+    },
+    {
+        "name": "Puck",
+        "descriptor": "Upbeat",
+        "gender": "Male",
+        "pitch": "Mid-range",
+        "alias": "Max",
+    },
+    {
+        "name": "Charon",
+        "descriptor": "Informative",
+        "gender": "Male",
+        "pitch": "Mid-to-low",
+        "alias": "Leo",
+    },
+    {
+        "name": "Kore",
+        "descriptor": "Firm",
+        "gender": "Female",
+        "pitch": "Mid-to-high",
+        "alias": "Chloe",
+    },
+    {
+        "name": "Fenrir",
+        "descriptor": "Excitable",
+        "gender": "Male",
+        "pitch": "Mid-range",
+        "alias": "Felix",
+    },
+    {
+        "name": "Leda",
+        "descriptor": "Youthful",
+        "gender": "Female",
+        "pitch": "High",
+        "alias": "Ava",
+    },
+    {
+        "name": "Orus",
+        "descriptor": "Firm",
+        "gender": "Male",
+        "pitch": "Mid-to-low",
+        "alias": "Miles",
+    },
+    {
+        "name": "Aoede",
+        "descriptor": "Breezy",
+        "gender": "Female",
+        "pitch": "Mid-range",
+        "alias": "Zoe",
+    },
+    {
+        "name": "Callirrhoe",
+        "descriptor": "Easy-going",
+        "gender": "Female",
+        "pitch": "Mid-to-high",
+        "alias": "Elena",
+    },
+    {
+        "name": "Autonoe",
+        "descriptor": "Bright",
+        "gender": "Female",
+        "pitch": "High",
+        "alias": "Maya",
+    },
+    {
+        "name": "Enceladus",
+        "descriptor": "Breathy",
+        "gender": "Male",
+        "pitch": "Mid-range",
+        "alias": "Hugo",
+    },
+    {
+        "name": "Iapetus",
+        "descriptor": "Clear",
+        "gender": "Male",
+        "pitch": "Mid-to-low",
+        "alias": "Jasper",
+    },
+    {
+        "name": "Umbriel",
+        "descriptor": "Easy-going",
+        "gender": "Male",
+        "pitch": "Mid-range",
+        "alias": "Oscar",
+    },
+    {
+        "name": "Algieba",
+        "descriptor": "Smooth",
+        "gender": "Female",
+        "pitch": "Mid-to-low",
+        "alias": "Isla",
+        "api_voice_name": "Zephyr",
+    },
+    {
+        "name": "Despina",
+        "descriptor": "Smooth",
+        "gender": "Female",
+        "pitch": "Mid-range",
+        "alias": "Nina",
+    },
+    {
+        "name": "Erinome",
+        "descriptor": "Clear",
+        "gender": "Female",
+        "pitch": "Mid-to-high",
+        "alias": "Lana",
+    },
+    {
+        "name": "Algenib",
+        "descriptor": "Gravelly",
+        "gender": "Male",
+        "pitch": "Low",
+        "alias": "Theo",
+    },
+    {
+        "name": "Rasalgethi",
+        "descriptor": "Informative",
+        "gender": "Male",
+        "pitch": "Mid-range",
+        "alias": "Milo",
+    },
+    {
+        "name": "Laomedeia",
+        "descriptor": "Upbeat",
+        "gender": "Female",
+        "pitch": "Mid-range",
+        "alias": "Jade",
+    },
+    {
+        "name": "Achernar",
+        "descriptor": "Soft",
+        "gender": "Female",
+        "pitch": "Mid-range",
+        "alias": "Ruby",
+    },
+    {
+        "name": "Alnilam",
+        "descriptor": "Firm",
+        "gender": "Male",
+        "pitch": "Mid-to-low",
+        "alias": "Ezra",
+    },
+    {
+        "name": "Schedar",
+        "descriptor": "Even",
+        "gender": "Male",
+        "pitch": "Mid-to-low",
+        "alias": "Kai",
+    },
+    {
+        "name": "Gacrux",
+        "descriptor": "Mature",
+        "gender": "Female",
+        "pitch": "Mid-to-low",
+        "alias": "Holly",
+    },
+    {
+        "name": "Pulcherrima",
+        "descriptor": "Forward",
+        "gender": "Female",
+        "pitch": "High",
+        "alias": "Stella",
+        "api_voice_name": "Leda",
+    },
+    {
+        "name": "Achird",
+        "descriptor": "Friendly",
+        "gender": "Male",
+        "pitch": "Mid-to-high",
+        "alias": "Finn",
+    },
+    {
+        "name": "Zubenelgenubi",
+        "descriptor": "Casual",
+        "gender": "Male",
+        "pitch": "Low",
+        "alias": "Nico",
+    },
+    {
+        "name": "Vindemiatrix",
+        "descriptor": "Gentle",
+        "gender": "Female",
+        "pitch": "Low",
+        "alias": "Wren",
+    },
+    {
+        "name": "Sadachbia",
+        "descriptor": "Lively",
+        "gender": "Male",
+        "pitch": "Low",
+        "alias": "Dean",
+    },
+    {
+        "name": "Sadaltager",
+        "descriptor": "Knowledgeable",
+        "gender": "Male",
+        "pitch": "Mid-range",
+        "alias": "Brett",
+    },
+    {
+        "name": "Sulafat",
+        "descriptor": "Warm",
+        "gender": "Female",
+        "pitch": "Mid-to-high",
+        "alias": "Piper",
+    },
+]
+
+# Voice name used by OpenAI Realtime. The 30 ThirtyTutors avatar/persona
+# entries are preserved; each persona is mapped to one of OpenAI's current
+# built-in Realtime voices so the existing avatar picker remains intact.
+_OPENAI_FEMALE_VOICES = ("marin", "coral", "sage", "shimmer", "cedar")
+_OPENAI_MALE_VOICES = ("alloy", "ash", "ballad", "echo", "verse")
+_voice_f_index = 0
+_voice_m_index = 0
+VOICE_NAME_TO_API = {}
+for _voice in VOICE_OPTIONS:
+    if _voice.get("gender") == "Female":
+        VOICE_NAME_TO_API[_voice["name"]] = _OPENAI_FEMALE_VOICES[
+            _voice_f_index % len(_OPENAI_FEMALE_VOICES)
+        ]
+        _voice_f_index += 1
+    else:
+        VOICE_NAME_TO_API[_voice["name"]] = _OPENAI_MALE_VOICES[
+            _voice_m_index % len(_OPENAI_MALE_VOICES)
+        ]
+        _voice_m_index += 1
+
+
+def get_api_voice_name(voice_name: str) -> str:
+    return VOICE_NAME_TO_API.get(voice_name, "marin")
+
+
 # OpenAI Realtime model choice. The current flagship Realtime model is used
 # as the single live tutor model to keep the UI/behavior aligned with the
 # original ThirtyTutors single-model experience.
