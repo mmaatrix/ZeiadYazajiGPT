@@ -1,5 +1,5 @@
 """Unit/integration tests for profiles_store.py - the profiles.json layer
-and the Gemini client factory. Note: delete_profile here only removes the
+and the OpenAI client factory. Note: delete_profile here only removes the
 profile row itself; cascading its conversations/voice-enrollment data is
 routes_api.py's job (remove_profile endpoint) - covered in
 test_routes_api.py, not here.
