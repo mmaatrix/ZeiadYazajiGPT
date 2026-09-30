@@ -94,12 +94,12 @@ def get_app_info():
     installed at all (e.g. running straight from a source checkout).
     """
     try:
-        version = importlib_metadata.version("thirtytutors")
+        version = importlib_metadata.version("zeiad-english-coach")
     except importlib_metadata.PackageNotFoundError:
         version = APP_VERSION
     return {
         "version": version,
-        "credits": ["Gemini Live API", "Resemblyzer", "TalkingHead"],
+        "credits": ["OpenAI Realtime API", "Resemblyzer", "TalkingHead", "ThirtyTutors upstream"],
     }
 
 
