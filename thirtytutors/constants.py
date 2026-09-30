@@ -254,22 +254,25 @@ VOICE_OPTIONS = [
 # own `name`, but a few aliases map to a different underlying Google voice
 # so the avatar's photo and local sample stay intact while the API still
 # receives a valid voice identifier.
-# The visual avatar library is kept exactly as in ThirtyTutors. OpenAI has a
-# smaller set of Realtime voices, so each existing avatar is mapped to one
-# OpenAI voice. The original gender labels above are ThirtyTutors' UI
-# metadata, not official OpenAI voice labels.
-_OPENAI_VOICES_A = ("marin", "coral", "shimmer", "verse")
-_OPENAI_VOICES_B = ("cedar", "echo", "ash", "sage", "ballad", "alloy")
-_voice_a_index = 0
-_voice_b_index = 0
+# Keep the complete ThirtyTutors avatar library, but route each persona to
+# an American-English GPT-Live voice. Gleam and Meridian are North American
+# voices in GPT-Live; Delta and Cinder provide optional Southern-U.S. variety.
+_GPT_LIVE_FEMALE_VOICES = ("gleam", "delta")
+_GPT_LIVE_MALE_VOICES = ("meridian", "cinder")
+_voice_f_index = 0
+_voice_m_index = 0
 VOICE_NAME_TO_API = {}
 for _voice in VOICE_OPTIONS:
     if _voice.get("gender") == "Female":
-        VOICE_NAME_TO_API[_voice["name"]] = _OPENAI_VOICES_A[_voice_a_index % len(_OPENAI_VOICES_A)]
-        _voice_a_index += 1
+        VOICE_NAME_TO_API[_voice["name"]] = _GPT_LIVE_FEMALE_VOICES[
+            _voice_f_index % len(_GPT_LIVE_FEMALE_VOICES)
+        ]
+        _voice_f_index += 1
     else:
-        VOICE_NAME_TO_API[_voice["name"]] = _OPENAI_VOICES_B[_voice_b_index % len(_OPENAI_VOICES_B)]
-        _voice_b_index += 1
+        VOICE_NAME_TO_API[_voice["name"]] = _GPT_LIVE_MALE_VOICES[
+            _voice_m_index % len(_GPT_LIVE_MALE_VOICES)
+        ]
+        _voice_m_index += 1
 
 
 def get_api_voice_name(voice_name: str) -> str:
@@ -288,11 +291,28 @@ def get_api_voice_name(voice_name: str) -> str:
 # being used as a silent fallback, not just as a direct UI choice. See
 # profiles_store.migrate_legacy_model_name for what happens to
 # conversations that were already created while it was still an option.
+# GPT-Live 1 is the primary voice frontend. GPT-6 Sol is used through
+# Responses delegation for the strongest tutoring/correction path.
+GPT_LIVE_BACKEND_MODEL = "gpt-6-sol"
+GPT_LIVE_FAST_BACKEND_MODEL = "gpt-6-luna"
+
 MODEL_OPTIONS = [
     {
+        "id": "gpt-live-1",
+        "label": "GPT-Live 1 + GPT-6 Sol (Best)",
+        "rate_limit_note": "Premier full-duplex voice with strongest delegated tutor reasoning",
+        "supports_affective_dialog": True,
+    },
+    {
+        "id": "gpt-live-1-fast",
+        "label": "GPT-Live 1 + GPT-6 Luna (Fast)",
+        "rate_limit_note": "Premier full-duplex voice with lower-latency delegated reasoning",
+        "supports_affective_dialog": True,
+    },
+    {
         "id": "gpt-realtime-2.1",
-        "label": "GPT Realtime 2.1",
-        "rate_limit_note": "OpenAI Realtime - highest quality",
+        "label": "GPT Realtime 2.1 (Fallback)",
+        "rate_limit_note": "Single-session realtime fallback",
         "supports_affective_dialog": True,
     },
 ]
@@ -308,7 +328,7 @@ DEFAULT_MODEL = MODEL_OPTIONS[0]["id"]
 # importing this directly, falling back to this constant only if the
 # package isn't recognized as installed at all (e.g. running straight fromgit
 # a source checkout without ever having been pip-installed).
-APP_VERSION = "1.3.0"
+APP_VERSION = "1.4.0"
 
 # OS-appropriate per-user data directory (profiles.json, memory.db,
 # voice_enrollment/) instead of storing user data inside the package tree
