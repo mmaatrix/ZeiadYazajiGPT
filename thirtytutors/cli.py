@@ -157,24 +157,24 @@ def _create_shortcut_macos(console) -> None:
 
     icon = _icon_path()
     if icon.is_file():
-        shutil.copy2(icon, resources_dir / "ZeiadEnglishCoach.icns")
+        shutil.copy2(icon, resources_dir / "ThirtyTutors.icns")
 
     info_plist = app_dir / "Contents" / "Info.plist"
     info_plist.write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n'
         '<plist version="1.0">\n<dict>\n'
-        "  <key>CFBundleName</key><string>Zeiad English Coach</string>\n"
-        "  <key>CFBundleExecutable</key><string>ZeiadEnglishCoach</string>\n"
-        "  <key>CFBundleIconFile</key><string>ZeiadEnglishCoach.icns</string>\n"
-        "  <key>CFBundleIdentifier</key><string>com.zeiad.yazaji.englishcoach</string>\n"
+        "  <key>CFBundleName</key><string>ThirtyTutors</string>\n"
+        "  <key>CFBundleExecutable</key><string>ThirtyTutors</string>\n"
+        "  <key>CFBundleIconFile</key><string>ThirtyTutors.icns</string>\n"
+        "  <key>CFBundleIdentifier</key><string>com.wissam.thirtytutors</string>\n"
         "  <key>CFBundlePackageType</key><string>APPL</string>\n"
         "  <key>CFBundleShortVersionString</key><string>1.0</string>\n"
         "</dict>\n</plist>\n",
         encoding="utf-8",
     )
 
-    launcher = macos_dir / "ZeiadEnglishCoach"
+    launcher = macos_dir / "ThirtyTutors"
     launcher.write_text(f'#!/bin/bash\nexec "{thirtytutors_bin}" "$@"\n', encoding="utf-8")
     launcher.chmod(launcher.stat().st_mode | stat.S_IEXEC | stat.S_IXGRP | stat.S_IXOTH)
 
@@ -330,7 +330,7 @@ def cmd_run(args: argparse.Namespace) -> None:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="thirtytutors",
-        description="Zeiad English Coach - a self-hosted, real-time voice AI language tutor.",
+        description="Zeiad English Coach - a self-hosted, real-time voice AI language tutor by Zeiad Yazaji.",
     )
     parser.add_argument(
         "--host",
