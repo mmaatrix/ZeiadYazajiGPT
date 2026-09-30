@@ -1,5 +1,5 @@
 """Periodic rolling-summary folding for a conversation's transcript. Split
-out of main.py; called from openai_live_session.py both periodically (every
+out of main.py; called from live_session.py both periodically (every
 memory.SUMMARY_FOLD_EVERY_N_TURNS turns) and once more on disconnect.
 """
 
