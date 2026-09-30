@@ -1,5 +1,20 @@
-Copyright 2026 Zeiad Yazaji 
+PolyForm Noncommercial License 1.0.0
 
-**Your licenses** are all the licenses granted to you for the software under these terms.
+Upstream software: ThirtyTutors
+Upstream copyright: Copyright 2026 Wissam Metawee
+Required Notice: Copyright 2026 Wissam Metawee (https://github.com/wiss84/thirtytutors)
 
-**Use** means anything you do with the software requiring one of your licenses.
+This repository contains a derivative work of ThirtyTutors. Modifications and
+new work in this repository are maintained by Zeiad Yazaji.
+
+The authoritative license terms are the PolyForm Noncommercial License 1.0.0:
+https://polyformproject.org/licenses/noncommercial/1.0.0
+
+The license permits use, modification, and distribution only for permitted
+noncommercial purposes and requires recipients to receive these terms or the
+license URL above together with the upstream Required Notice.
+
+Commercial use is not granted by this license.
+
+For the complete authoritative text, see:
+https://polyformproject.org/licenses/noncommercial/1.0.0
