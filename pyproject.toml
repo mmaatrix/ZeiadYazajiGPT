@@ -3,14 +3,14 @@ requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "thirtytutors"
+name = "zeiad-english-coach"
 dynamic = ["version"]
-description = "A self-hosted, real-time voice AI language tutor with a 3D talking avatar, built on the Gemini Live API."
+description = "A self-hosted real-time voice AI language tutor with a 3D talking avatar, powered by OpenAI Realtime."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { file = "LICENSE" }
-authors = [{ name = "Wissam Metawee" }]
-keywords = ["language-learning", "ai-tutor", "gemini", "voice-ai", "talking-avatar", "speech-to-speech"]
+authors = [{ name = "Zeiad Yazaji" }]
+keywords = ["language-learning", "ai-tutor", "openai", "voice-ai", "talking-avatar", "speech-to-speech"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: End Users/Desktop",
@@ -35,12 +35,10 @@ classifiers = [
 dependencies = [
     "fastapi",
     "uvicorn[standard]",
-    "google-genai",
+    "openai>=1.0",
     "websockets",
     "numpy",
     "pywebview",
-    "protobuf>=4.25.8,<7.0.0",
-    "googleapis-common-protos>=1.5.5",
     "jinja2>=3.1.4",
     "platformdirs",
     "python-docx>=1.1.0",
@@ -60,9 +58,9 @@ dev = ["pytest", "pytest-asyncio", "pytest-cov", "httpx", "httpx2", "ruff", "lan
 # extra is completely unaffected.
 
 [project.urls]
-Homepage = "https://github.com/wiss84/thirtytutors"
-Repository = "https://github.com/wiss84/thirtytutors"
-Issues = "https://github.com/wiss84/thirtytutors/issues"
+Homepage = "https://github.com/mmaatrix/ZeiadYazajiGPT"
+Repository = "https://github.com/mmaatrix/ZeiadYazajiGPT"
+Issues = "https://github.com/mmaatrix/ZeiadYazajiGPT/issues"
 
 [project.scripts]
 thirtytutors = "thirtytutors.cli:main"
