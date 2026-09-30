@@ -150,7 +150,7 @@ function connectWebSocket() {
       // OpenAI's current live transcription is shown to the learner so both
       // sides of the conversation remain visible. The persisted transcript
       // is still the source used by memory and summaries.
-      appendOrCreateBubble('user', msg.text);
+      appendOrCreateBubble('mine', msg.text);
     } else if (msg.type === 'transcript_out') {
       appendOrCreateBubble('tutor', msg.text);
     } else if (msg.type === 'turn_complete') {
