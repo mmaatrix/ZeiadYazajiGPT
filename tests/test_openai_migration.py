@@ -70,8 +70,8 @@ def test_realtime_session_config_uses_24khz_audio():
 
     event = sock.events[0]
     assert event["type"] == "session.update"
-    assert event["session"]["model"] == "gpt-realtime-2.1"
+    assert "model" not in event["session"]
     assert event["session"]["audio"]["input"]["format"]["rate"] == 24000
     assert event["session"]["audio"]["input"]["turn_detection"] is None
     assert event["session"]["audio"]["output"]["format"]["rate"] == 24000
-    assert event["session"]["audio"]["input"]["transcription"]["model"] == "gpt-live-transcribe"
+    assert event["session"]["audio"]["input"]["transcription"]["model"] == "gpt-4o-transcribe"
