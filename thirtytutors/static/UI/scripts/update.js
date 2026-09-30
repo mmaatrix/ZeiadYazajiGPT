@@ -75,7 +75,7 @@ function describeUpdate(status) {
   if (!appUp && !assetsUp && !marketingUp) return null;
 
   const parts = [];
-  if (appUp) parts.push(`a new version of ThirtyTutors (v${status.app.current} \u2192 v${status.app.latest})`);
+  if (appUp) parts.push(`a new version of Zeiad English Coach (v${status.app.current} \u2192 v${status.app.latest})`);
   if (assetsUp) parts.push('updated avatars/voices/photos');
   if (marketingUp) parts.push('updated landing-page assets');
 
@@ -388,7 +388,7 @@ let autoUpdateStarted = false;
 // the one case that gets its own wording below (a first run genuinely
 // can't do anything useful without the avatar bundle, so it reads as
 // setup rather than an update), everything else shows a generic
-// "Updating ThirtyTutors" message built from describeUpdate's own summary
+// "Updating Zeiad English Coach" message built from describeUpdate's own summary
 // text, the same text the bell's detail modal would otherwise have shown.
 //
 // On failure (see runUpdateAction's own catch), this just leaves the
@@ -403,7 +403,7 @@ async function maybeStartAutoUpdate() {
   autoUpdateStarted = true;
 
   const firstRun = isFirstRunAssetsMissing(latestUpdateStatus);
-  firstRunTitle.textContent = firstRun ? 'Setting up ThirtyTutors' : 'Updating ThirtyTutors';
+  firstRunTitle.textContent = firstRun ? 'Setting up Zeiad English Coach' : 'Updating Zeiad English Coach';
   firstRunMessage.textContent = firstRun
     ? "Downloading your 3D tutor avatars and voices - this only happens once. Make sure you're connected to the internet."
     : info.message;
