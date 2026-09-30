@@ -58,11 +58,11 @@ function registerAvatarAudioSink(audioCtx, headaudio) {
 
 // --- Idle -> sleep mood ---
 // After 2 minutes with no conversation activity, the avatar's mood is set
-// to 'sleep' - a deterministic, Gemini-independent UI state (the set_mood
-// tool only fires at Gemini's discretion, so nothing guarantees a call to
+// to 'sleep' - a deterministic, OpenAI-independent UI state (the set_mood
+// tool only fires at OpenAI's discretion, so nothing guarantees a call to
 // end an idle period). Resuming activity always resets the mood to
-// 'neutral' first, before anything round-trips through Gemini - whatever
-// mood Gemini reflects for the new turn (if any) naturally overrides this
+// 'neutral' first, before anything round-trips through OpenAI - whatever
+// mood OpenAI reflects for the new turn (if any) naturally overrides this
 // afterward. window.setAvatarMood is exposed by avatarDrawer.js and is a
 // no-op until the avatar drawer has actually been opened once.
 const IDLE_SLEEP_MS = 2 * 60 * 1000;
@@ -96,7 +96,7 @@ let pcmBufferedSamples = 0;
 // isRecording: while active, EVERY worklet callback feeds it (mic never
 // needs a press), sent as a distinct 'handsfree_chunk' message type so the
 // backend can run its own windowing/speaker-verification gate in front of
-// forwarding anything to Gemini (see live_session.py's module docstring).
+// forwarding anything to OpenAI (see live_session.py's module docstring).
 let handsFreeActive = false;
 let hfBuffer = [];
 let hfBufferedSamples = 0;
@@ -178,7 +178,7 @@ function isTutorSpeaking() {
 // always means either the very first connect (nothing scheduled yet, so
 // this is a no-op - ctx is still null at that point) or a reconnect
 // (go_away/error - see live_session.py's module docstring) that replaced
-// the underlying Gemini session entirely. Without this, nextPlaybackTime
+// the underlying OpenAI voice session entirely. Without this, nextPlaybackTime
 // keeps counting from wherever the OLD session's last audio chunk left
 // it - if that session was cut off mid-speech (the common case for an
 // error-triggered reconnect), the NEW session's first audio chunk would
@@ -271,7 +271,7 @@ function ensureMicReady() {
       // hands-free is a continuous mode with no per-turn press, so the mic
       // stays open through the tutor's reply; without this, that reply
       // would get picked up by the mic and forwarded straight back to
-      // Gemini as if the student had spoken over it. Mirrors the backend's
+      // OpenAI as if the student had spoken over it. Mirrors the backend's
       // own drop-while-quiz-active pattern (_VOICE_MESSAGE_TYPES in
       // live_session.py), just gated on speech instead of quiz state.
       if (handsFreeActive && !isTutorSpeaking()) {
@@ -287,7 +287,7 @@ function ensureMicReady() {
 }
 
 // --- Reconnect audio replay (defense-in-depth) ---
-// The backend now reconnects go_away and dropped-Gemini-session errors
+// The backend now reconnects go_away and dropped-OpenAI-session errors
 // in place without ever closing this browser websocket (see
 // live_session.py's module docstring), so under normal operation none of
 // this fires - the backend's own buffered-audio replay already covers
