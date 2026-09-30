@@ -464,7 +464,7 @@ THRESHOLD_TEST_NOISE_PROMPT = "Stay quiet, or make some noise without speaking (
 
 # Hands-free mode: the mic stays open continuously (no push-to-talk), so
 # incoming audio is chopped into rolling windows and each window is
-# speaker-verified before being forwarded to Gemini. 1.6s matches
+# speaker-verified before being forwarded to OpenAI Realtime. 1.6s matches
 # Resemblyzer's own internal partial-utterance window (VoiceEncoder slices
 # audio into 1.6s partials internally), so this is close to the minimum
 # that's still a good fit for the active backend - shrinking further would
