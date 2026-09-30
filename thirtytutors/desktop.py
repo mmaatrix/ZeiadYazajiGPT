@@ -58,7 +58,7 @@ ICON_PATH = Path(__file__).parent / "static" / _ICON_NAME
 # own once should_exit is set, before forcibly tearing them down and
 # proceeding to the ASGI lifespan shutdown event. Generous enough to give
 # live_session.py's ws_session `finally` block (a couple of fast local
-# SQLite writes, plus a best-effort Gemini call for the final summary
+# SQLite writes, plus a best-effort OpenAI call for the final summary
 # fold - see that module) a genuine chance to complete normally, not just
 # the bare minimum.
 SERVER_GRACEFUL_SHUTDOWN_TIMEOUT_S = 45.0
