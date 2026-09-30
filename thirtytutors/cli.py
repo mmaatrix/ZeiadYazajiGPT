@@ -125,7 +125,7 @@ def _create_shortcut_windows(console) -> None:
     if not pythonw.is_file():
         pythonw = Path(sys.executable)  # fallback - still works, just shows a console
 
-    shortcut_path = _desktop_dir() / "ThirtyTutors.lnk"
+    shortcut_path = _desktop_dir() / "Zeiad English Coach.lnk"
     shell = win32com.client.Dispatch("WScript.Shell")
     shortcut = shell.CreateShortCut(str(shortcut_path))
     shortcut.TargetPath = str(pythonw)
@@ -134,7 +134,7 @@ def _create_shortcut_windows(console) -> None:
     icon = _icon_path()
     if icon.is_file():
         shortcut.IconLocation = f"{icon},0"
-    shortcut.Description = "ThirtyTutors - AI language tutor"
+    shortcut.Description = "Zeiad English Coach - AI language tutor by Zeiad Yazaji"
     shortcut.save()
     console.print(f"[green]\u2713[/green] Desktop shortcut created: {shortcut_path}")
 
