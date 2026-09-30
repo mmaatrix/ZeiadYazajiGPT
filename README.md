@@ -2,7 +2,7 @@
 
 A real-time AI language tutor for speaking practice, maintained by **Zeiad Yazaji**.
 
-This repository is based on the open-source **ThirtyTutors** project. The goal is to preserve the original ThirtyTutors experience and features while replacing its Gemini Live backend with **OpenAI Realtime**.
+This repository is a derivative of the **ThirtyTutors** project. The goal is to preserve the original ThirtyTutors experience and features while replacing its Gemini Live backend with **OpenAI Realtime**.
 
 ## Current migration
 
@@ -13,6 +13,8 @@ This repository is based on the open-source **ThirtyTutors** project. The goal i
 - OpenAI audio output remains 24 kHz PCM and feeds the existing avatar/lip-sync playback.
 - Rolling summaries use `gpt-5.6-luna`.
 - OpenAI API credentials replace Gemini API credentials.
+- Default learner language is Arabic and the target is American English.
+- Current Realtime choices are `gpt-realtime-2.1` and `gpt-realtime-2.1-mini`.
 
 ## Developer
 
