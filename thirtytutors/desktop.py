@@ -122,8 +122,8 @@ def _build_uvicorn_server(host: str, port: int) -> uvicorn.Server:
 
     timeout_graceful_shutdown is passed inside a try/except since it's a
     newer Config field that may not exist on an older installed uvicorn
-    (same defensive pattern as live_session.py's build_config uses for
-    newer google-genai SDK fields) - without it, uvicorn just waits
+    (same defensive pattern used by the OpenAI Realtime relay uses for
+    newer uvicorn fields) - without it, uvicorn just waits
     indefinitely for connections to close on its own instead of forcing
     them after SERVER_GRACEFUL_SHUTDOWN_TIMEOUT_S, but
     _shut_down_server_gracefully's own outer join(timeout=...) still bounds
