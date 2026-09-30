@@ -243,17 +243,6 @@ VOICE_OPTIONS = [
     },
 ]
 
-# Voice name used when calling the Google Live API. Most entries use their
-# own `name`, but a few aliases map to a different underlying Google voice
-# so the avatar's photo and local sample stay intact while the API still
-# receives a valid voice identifier.
-VOICE_NAME_TO_API = {v["name"]: v.get("api_voice_name") or v["name"] for v in VOICE_OPTIONS}
-
-
-def get_api_voice_name(voice_name: str) -> str:
-    return VOICE_NAME_TO_API.get(voice_name, voice_name)
-
-
 # OpenAI Realtime voice mapping. The avatar/persona catalog above is kept
 # unchanged; multiple personas may intentionally share a supported voice.
 _OPENAI_FEMALE_VOICES = ("marin", "coral", "sage", "shimmer", "cedar")
