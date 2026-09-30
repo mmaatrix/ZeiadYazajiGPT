@@ -702,7 +702,7 @@ settingsExportProfileBtn.addEventListener('click', async () => {
     a.href = url;
     const disposition = res.headers.get('Content-Disposition');
     const filenameMatch = disposition && disposition.match(/filename="?([^"]+)"?/);
-    a.download = filenameMatch ? filenameMatch[1] : 'ThirtyTutors-backup.zip';
+    a.download = filenameMatch ? filenameMatch[1] : 'Zeiad-English-Coach-backup.zip';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -739,7 +739,7 @@ settingsImportProfileFile.addEventListener('change', async () => {
     // it should silently become the active one.
     setTimeout(() => { window.location.href = '/profiles'; }, 1200);
   } catch (e) {
-    settingsBackupStatus.textContent = "Could not import that file - make sure it's a ThirtyTutors backup zip.";
+    settingsBackupStatus.textContent = "Could not import that file - make sure it's a Zeiad English Coach backup zip.";
     settingsImportProfileBtn.disabled = false;
   }
 });
@@ -799,12 +799,12 @@ async function loadAboutPane() {
     appInfoCache = await res.json();
     renderAboutPane(appInfoCache);
   } catch (e) {
-    settingsVersionText.textContent = 'ThirtyTutors';
+    settingsVersionText.textContent = 'Zeiad English Coach';
   }
 }
 
 function renderAboutPane(info) {
-  settingsVersionText.textContent = `ThirtyTutors v${info.version}`;
+  settingsVersionText.textContent = `Zeiad English Coach v${info.version} · Zeiad Yazaji`;
   settingsCreditsText.textContent = info.credits && info.credits.length
     ? `Built with ${info.credits.join(', ')}.`
     : '';
