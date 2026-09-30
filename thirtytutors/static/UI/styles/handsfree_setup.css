@@ -1,0 +1,133 @@
+/* --- Hands-free setup page: centered, wider card than /landing since it
+   walks through 3 sequential sections rather than a short form. */
+
+#hfSetupWrap {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+#hfSetupCard {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 720px;
+  margin: 24px 0;
+}
+
+#hfSetupTitle {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 10px;
+}
+
+#hfSetupIntro {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 0 0 8px;
+}
+
+/* --- Hands-free tutorial video popup - see handsfreeSetup.js for
+   open/close logic. Same overlay/click-outside-to-close convention as
+   #notesModalOverlay (modals.css) and get_started.css's own
+   #apiKeyTutorialOverlay, just page-local here since this popup only
+   exists on this one page. --- */
+
+.handsfree-tutorial-btn {
+  width: 100%;
+  margin: 0 0 18px;
+}
+
+#handsfreeTutorialOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 12, 16, 0.75);
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+}
+#handsfreeTutorialOverlay.visible { display: flex; }
+
+#handsfreeTutorialModal {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  width: min(720px, 92vw);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+}
+#handsfreeTutorialModal h2 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  margin: 0 0 14px;
+}
+
+#handsfreeTutorialVideo {
+  width: 100%;
+  max-height: 60vh;
+  border-radius: 8px;
+  display: block;
+  background: #000;
+}
+
+.hf-setup-section h2 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+
+.hf-setup-center-header {
+  text-align: center;
+}
+
+#thresholdTestLog {
+  margin-top: 12px;
+  font-size: 0.8rem;
+  font-family: var(--font-mono, monospace);
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hf-test-line {
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--panel-raised);
+  border: 1px solid var(--border);
+}
+
+.hf-test-line.hf-test-active {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+#hfSetupDoneMessage {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text);
+  text-align: center;
+  margin: 0;
+}
+
+#hfSetupNav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+#hfContinueBtn:disabled {
+  background: var(--panel-raised);
+  color: var(--text-muted);
+  cursor: default;
+}

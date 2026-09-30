@@ -1,0 +1,350 @@
+/* --- Top bar --- */
+
+@keyframes electricity {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+#topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel);
+}
+
+#topbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#appTitle {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  letter-spacing: 0.01em;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-name-text {
+  background: linear-gradient(
+    90deg,
+    #3b82f6 0%,
+    #3b82f6 30%,
+    #93c5fd 45%,
+    #ffffff 50%,
+    #93c5fd 55%,
+    #3b82f6 70%,
+    #3b82f6 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: electricity 3s linear infinite;
+}
+
+#connectionDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition: background 0.3s ease;
+}
+#connectionDot.connected { background: var(--ok); }
+#connectionDot.error { background: var(--accent); }
+
+#modelDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition: background 0.3s ease;
+  margin-left: 14px;
+}
+/* green=connected, red=connecting/reconnecting, gray=unavailable (both
+   configured models exhausted - see live_session.py's ws_session) */
+#modelDot.connected { background: var(--ok); }
+#modelDot.connecting { background: var(--accent); }
+#modelDot.unavailable { background: var(--text-muted); }
+
+#modelNameText {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-left: 6px;
+}
+
+#profileControl {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#topbarRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#currentProfileName {
+  font-family: var(--font-display);
+  font-weight: 500;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.pill-btn {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--panel-raised);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.pill-btn:hover { border-color: var(--accent); }
+
+/* --- Session status indicator (topbar, next to connection dot) --- */
+
+.session-status {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-left: 4px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.session-status.visible { opacity: 1; }
+
+/* --- Update notification bell (base template - visible on every page,
+   since not every page loads settings.css/settings.js - see update.js).
+   Visual language deliberately mirrors .settings-dropdown/.settings-
+   dropdown-item (settings.css) - duplicated rather than shared since this
+   file is the only one guaranteed loaded everywhere. --- */
+
+#updateBellWrap {
+  position: relative;
+}
+
+@keyframes bell-badge-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(193, 64, 61, 0.55); }
+  50% { box-shadow: 0 0 0 4px rgba(193, 64, 61, 0); }
+}
+
+.update-badge-count {
+  position: absolute;
+  top: -2px;
+  right: -4px;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 3px;
+  border-radius: 999px;
+  background: var(--accent);
+  border: 1.5px solid var(--panel);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: bell-badge-pulse 2s ease-in-out infinite;
+}
+
+.update-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 260px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  z-index: 60;
+}
+.update-dropdown.visible { display: block; }
+
+.update-dropdown-message {
+  margin: 0 0 12px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.update-dropdown-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.update-action-btn {
+  width: 100%;
+  text-align: center;
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.update-action-btn:hover { background: var(--accent-hover); }
+.update-action-btn:disabled { opacity: 0.6; cursor: default; }
+
+.update-dropdown-item {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  padding: 7px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.update-dropdown-item:hover { background: var(--panel-raised); color: var(--text); }
+
+.update-dropdown-status {
+  margin: 8px 0 0;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  min-height: 1em;
+}
+
+/* --- Bell dropdown: notification LIST item (click opens the detail
+   modal below) - not the action itself, per the two-tier pattern this
+   replaced (bell dropdown = list, click a row = detail + actions). --- */
+
+.update-notification-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: var(--panel-raised);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--text);
+  line-height: 1.4;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+.update-notification-item:last-child { margin-bottom: 0; }
+.update-notification-item:hover { border-color: var(--accent); }
+
+#updateBellEmptyText { margin: 0; }
+
+/* --- Update detail modal (opened from the notification-item row above) -
+   same overlay chrome as #settingsOverlay/#notesModalOverlay
+   (settings.css/modals.css), duplicated here since this needs to be
+   reachable from every page, not just the learning page that loads those
+   files. --- */
+
+#updateDetailOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 12, 16, 0.6);
+  align-items: center;
+  justify-content: center;
+  z-index: 70;
+}
+#updateDetailOverlay.visible { display: flex; }
+
+#updateDetailModal {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  width: 340px;
+  max-width: 90vw;
+}
+#updateDetailModal h3 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  margin: 0 0 12px;
+  padding-right: 20px;
+}
+#closeUpdateDetailBtn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+}
+
+/* --- Update detail modal: progress bar - shown only while a download
+   step is actually in flight (see update.js's runUpdateAction), hidden
+   the rest of the time (before starting, during the non-download "pip
+   install"/"Restarting" steps, and after finishing). --- */
+
+.update-progress-wrap {
+  margin: 4px 0 12px;
+}
+.update-progress-track {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--panel-raised);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.update-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  transition: width 0.25s ease;
+}
+
+/* --- First-run asset download overlay - see update.js's
+   maybeStartFirstRunSetup. Same overlay chrome as #updateDetailOverlay
+   above, but no close button and a higher z-index, since this one must
+   sit above literally everything else (including the settings modal, if
+   somehow already open) and can't be dismissed. --- */
+
+#firstRunOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 12, 16, 0.75);
+  align-items: center;
+  justify-content: center;
+  z-index: 90;
+}
+#firstRunOverlay.visible { display: flex; }
+
+#firstRunModal {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px;
+  width: 380px;
+  max-width: 90vw;
+  text-align: center;
+}
+#firstRunModal h3 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  margin: 0 0 12px;
+}
+#firstRunModal .update-progress-wrap {
+  margin-top: 4px;
+}
+#firstRunRetryBtn {
+  margin-top: 14px;
+  width: 100%;
+}
