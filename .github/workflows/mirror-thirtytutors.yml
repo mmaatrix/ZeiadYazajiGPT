@@ -31,7 +31,7 @@ jobs:
           cp .github/workflows/mirror-thirtytutors.yml "$RUNNER_TEMP/keep/mirror-thirtytutors.yml"
 
           find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
-          rsync -a --exclude='.git' "$RUNNER_TEMP/upstream/" ./
+          rsync -a             --exclude='.git'             --exclude='.github/workflows/'             "$RUNNER_TEMP/upstream/" ./
 
           mkdir -p .github/workflows
           cp "$RUNNER_TEMP/keep/mirror-thirtytutors.yml" .github/workflows/mirror-thirtytutors.yml
