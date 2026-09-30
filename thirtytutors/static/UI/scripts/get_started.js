@@ -179,7 +179,9 @@ const apiKeyTutorialVideo = document.getElementById('apiKeyTutorialVideo');
 const closeApiKeyTutorialBtn = document.getElementById('closeApiKeyTutorialBtn');
 
 function openApiKeyTutorial() {
-  window.open('https://platform.openai.com/api-keys', '_blank', 'noopener');
+  apiKeyTutorialOverlay.classList.add('visible');
+  apiKeyTutorialVideo.currentTime = 0;
+  apiKeyTutorialVideo.play().catch(() => {}); // autoplay can still be blocked on some platforms - the video still has its own controls either way
 }
 
 function closeApiKeyTutorial() {
