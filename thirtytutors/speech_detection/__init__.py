@@ -10,7 +10,7 @@ gets checked against that profile's enrolled reference embedding and its
 own calibrated threshold (verifier.py) to decide whether the audio
 plausibly came from the enrolled speaker - so background conversation from
 someone else in the room can be filtered out before it ever reaches
-OpenAI Realtime, rather than relying on Gemini's own speech-vs-silence VAD, which
+OpenAI Realtime, rather than relying on the provider's own speech-vs-silence VAD, which
 has no concept of speaker identity.
 """
 
