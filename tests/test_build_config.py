@@ -26,83 +26,80 @@ def _minimal_conv_config():
     return {"target_language": "Spanish", "native_language": "English"}
 
 
-def _system_instruction_text(config) -> str:
-    """system_instruction is built as a plain string in build_config, but
-    the SDK may normalize it into a types.Content internally - handles
-    either shape rather than assuming one."""
-    si = config.system_instruction
-    if isinstance(si, str):
-        return si
-    text = getattr(si, "text", None)
-    if text:
-        return text
-    parts = getattr(si, "parts", None) or []
-    return "".join(getattr(p, "text", "") or "" for p in parts)
-
-
-def _tool_function_names(config) -> set[str]:
-    return {fn.name for tool in config.tools for fn in tool.function_declarations}
+def _system_instructions(review_terms=None, taught_vocab=None):
+    return live_session._build_instructions(
+        _minimal_profile(),
+        _minimal_conv_config(),
+        None,
+        review_terms or [],
+        taught_vocab or [],
+    )
 
 
 def test_build_config_declares_both_mood_and_quiz_tools():
-    config = live_session.build_config(_minimal_profile(), _minimal_conv_config(), "gemini-2.5-flash-native-audio-latest")
-    assert _tool_function_names(config) == {"set_mood", "start_quiz"}
+    # OpenAI Realtime receives tool schemas directly in session.update.
+    import asyncio
+
+    class _Socket:
+        def __init__(self):
+            self.events = []
+
+        async def send(self, payload):
+            import json
+            self.events.append(json.loads(payload))
+
+    sock = _Socket()
+    asyncio.run(
+        live_session._configure_session(
+            sock,
+            profile=_minimal_profile(),
+            conv_config=_minimal_conv_config(),
+            model_name="gpt-realtime-2.1",
+            summary_text=None,
+            review_terms=[],
+            taught_vocab=[],
+        )
+    )
+    names = {
+        tool["name"]
+        for tool in sock.events[0]["session"]["tools"]
+        if tool.get("type") == "function"
+    }
+    assert names == {"set_mood", "start_quiz"}
 
 
 def test_build_config_omits_spaced_repetition_block_without_review_terms():
-    config = live_session.build_config(_minimal_profile(), _minimal_conv_config(), "gemini-2.5-flash-native-audio-latest")
-    assert "Trouble spots" not in _system_instruction_text(config)
+    assert "Trouble spots" not in _system_instructions()
 
 
 def test_build_config_includes_spaced_repetition_block_with_review_terms():
     review_terms = ["el clima", "sin embargo"]
-    config = live_session.build_config(
-        _minimal_profile(),
-        _minimal_conv_config(),
-        "gemini-2.5-flash-native-audio-latest",
-        review_terms=review_terms,
+    text = _system_instructions(review_terms=review_terms)
+    expected_block = SPACED_REPETITION_CONTEXT_TEMPLATE.format(
+        name="Alex", terms=", ".join(review_terms)
     )
-    text = _system_instruction_text(config)
-    expected_block = SPACED_REPETITION_CONTEXT_TEMPLATE.format(name="Alex", terms=", ".join(review_terms))
     assert expected_block in text
 
 
 def test_build_config_omits_spaced_repetition_block_with_empty_review_terms():
-    config = live_session.build_config(
-        _minimal_profile(),
-        _minimal_conv_config(),
-        "gemini-2.5-flash-native-audio-latest",
-        review_terms=[],
-    )
-    assert "Trouble spots" not in _system_instruction_text(config)
+    assert "Trouble spots" not in _system_instructions(review_terms=[])
 
 
 def test_build_config_omits_taught_vocab_block_without_taught_vocab():
-    config = live_session.build_config(_minimal_profile(), _minimal_conv_config(), "gemini-2.5-flash-native-audio-latest")
-    assert "Vocabulary already taught" not in _system_instruction_text(config)
+    assert "Vocabulary already taught" not in _system_instructions()
 
 
 def test_build_config_includes_taught_vocab_block_with_taught_vocab():
     taught_vocab = ["el clima", "sin embargo"]
-    config = live_session.build_config(
-        _minimal_profile(),
-        _minimal_conv_config(),
-        "gemini-2.5-flash-native-audio-latest",
-        taught_vocab=taught_vocab,
+    text = _system_instructions(taught_vocab=taught_vocab)
+    expected_block = TAUGHT_VOCAB_CONTEXT_TEMPLATE.format(
+        name="Alex", terms=", ".join(taught_vocab)
     )
-    text = _system_instruction_text(config)
-    expected_block = TAUGHT_VOCAB_CONTEXT_TEMPLATE.format(name="Alex", terms=", ".join(taught_vocab))
     assert expected_block in text
 
 
 def test_build_config_omits_taught_vocab_block_with_empty_taught_vocab():
-    config = live_session.build_config(
-        _minimal_profile(),
-        _minimal_conv_config(),
-        "gemini-2.5-flash-native-audio-latest",
-        taught_vocab=[],
-    )
-    assert "Vocabulary already taught" not in _system_instruction_text(config)
+    assert "Vocabulary already taught" not in _system_instructions(review_terms=[], taught_vocab=[])
 
 
 # --- QUIZ_TOOL schema (design_plans/issues_fix.md: correct_answers omission) ---
