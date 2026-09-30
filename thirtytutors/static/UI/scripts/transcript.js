@@ -3,7 +3,7 @@
 let sessionStatusTimer = null;
 
 // One "in-progress" bubble per speaker per turn - transcripts stream in as
-// several small chunks (from both OpenAI's output_audio_transcription for
+// several small chunks (from both Gemini's output_audio_transcription for
 // the tutor and input_audio_transcription for the student), so these get
 // appended to rather than each chunk becoming its own bubble.
 let activeBubbles = { mine: null, tutor: null };
@@ -65,9 +65,9 @@ function setConnectionState(state) {
 }
 
 // Separate from the connection dot above - that one reflects whether our
-// own WebSocket to the backend is up; this one reflects whether OpenAI's
+// own WebSocket to the backend is up; this one reflects whether Gemini's
 // Live API itself is reachable on the currently active model, which can
-// differ from our own connection state (e.g. our WS is fine, but OpenAI
+// differ from our own connection state (e.g. our WS is fine, but Gemini
 // dropped the session with a 1011 and both configured models are down -
 // see live_session.py's ws_session). state is 'connecting' | 'connected' |
 // 'unavailable' - decided color mapping: green=connected, red=connecting/
@@ -133,16 +133,21 @@ function renderHistoryBubble(who, text) {
 function renderConversationTranscript(turns) {
   finalizeTurnBubbles();
   transcriptArea.innerHTML = '';
-  const allTurns = turns || [];
-  if (allTurns.length === 0) {
+  // 'user' turns are stored (they still feed memory/summarization) but not
+  // rendered - see websocket.js's transcript_in handler for the matching
+  // change and the reasoning (unreliable transcription for the student's
+  // own speech). Filtered before the empty-state check, not after, so a
+  // conversation with only a user turn so far (e.g. disconnected before
+  // the tutor replied) still shows the empty-state message instead of a
+  // blank area.
+  const tutorTurns = (turns || []).filter((t) => t.role !== 'user');
+  if (tutorTurns.length === 0) {
     const fresh = document.createElement('div');
     fresh.id = 'emptyState';
     fresh.textContent = 'Hold the button below and start speaking.';
     transcriptArea.appendChild(fresh);
     return;
   }
-  allTurns.forEach((t) => {
-    renderHistoryBubble(t.role === 'user' ? 'mine' : 'tutor', t.text);
-  });
+  tutorTurns.forEach((t) => renderHistoryBubble('tutor', t.text));
   transcriptArea.scrollTop = transcriptArea.scrollHeight;
 }
