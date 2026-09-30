@@ -523,6 +523,8 @@ async def ws_session(websocket: WebSocket):
                 continue
 
             if msg_type == "start_turn":
+                # Barge-in: cancel any active Realtime response before accepting the new turn.
+                await _send_openai(openai_ws, {"type": "response.cancel"})
                 await _send_openai(openai_ws, {"type": "input_audio_buffer.clear"})
             elif msg_type == "audio_chunk":
                 converted = _pcm16_16k_to_24k_b64(msg.get("data") or "")
