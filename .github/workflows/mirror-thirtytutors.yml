@@ -25,16 +25,14 @@ jobs:
       - name: Replace repository content with upstream baseline
         shell: bash
         run: |
+          set -euo pipefail
+
           mkdir -p "$RUNNER_TEMP/keep"
           cp .github/workflows/mirror-thirtytutors.yml "$RUNNER_TEMP/keep/mirror-thirtytutors.yml"
 
           find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
           cp -a "$RUNNER_TEMP/upstream/." .
           rm -rf .git
-          git init
-          git remote add origin "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
-          git fetch origin main
-          git checkout -B main origin/main
 
           mkdir -p .github/workflows
           cp "$RUNNER_TEMP/keep/mirror-thirtytutors.yml" .github/workflows/mirror-thirtytutors.yml
