@@ -309,12 +309,6 @@ MODEL_OPTIONS = [
         "rate_limit_note": "Premier full-duplex voice with lower-latency delegated reasoning",
         "supports_affective_dialog": True,
     },
-    {
-        "id": "gpt-realtime-2.1",
-        "label": "GPT Realtime 2.1 (Fallback)",
-        "rate_limit_note": "Single-session realtime fallback",
-        "supports_affective_dialog": True,
-    },
 ]
 
 DEFAULT_MODEL = MODEL_OPTIONS[0]["id"]
