@@ -30,3 +30,48 @@ def test_openai_tool_schemas():
     quiz = build_quiz_tool(native_language="Arabic", target_language="English")
     assert quiz["type"] == "function"
     assert quiz["name"] == "start_quiz"
+
+
+class _FakeRealtimeSocket:
+    def __init__(self):
+        self.events = []
+
+    async def send(self, payload):
+        import json
+        self.events.append(json.loads(payload))
+
+
+def test_realtime_session_config_uses_24khz_audio():
+    import asyncio
+
+    from thirtytutors.openai_live_session import _configure_session
+
+    sock = _FakeRealtimeSocket()
+    profile = {"id": "test-profile", "name": "Zeiad"}
+    config = {
+        "native_language": "Arabic",
+        "target_language": "English",
+        "voice_name": constants.DEFAULT_VOICE,
+        "scenario": "free_learning",
+        "difficulty": "intermediate",
+    }
+
+    asyncio.run(
+        _configure_session(
+            sock,
+            profile=profile,
+            conv_config=config,
+            model_name="gpt-realtime-2.1",
+            summary_text=None,
+            review_terms=[],
+            taught_vocab=[],
+        )
+    )
+
+    event = sock.events[0]
+    assert event["type"] == "session.update"
+    assert event["session"]["model"] == "gpt-realtime-2.1"
+    assert event["session"]["audio"]["input"]["format"]["rate"] == 24000
+    assert event["session"]["audio"]["input"]["turn_detection"] is None
+    assert event["session"]["audio"]["output"]["format"]["rate"] == 24000
+    assert event["session"]["audio"]["input"]["transcription"]["model"] == "gpt-live-transcribe"
