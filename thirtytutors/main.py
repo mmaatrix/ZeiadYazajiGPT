@@ -2,7 +2,7 @@
 FastAPI app entrypoint: static/template setup, middleware, and router
 wiring. Route logic itself lives in routes_pages.py (page shells),
 routes_api.py (reference-data + profile/conversation REST), and
-openai_live_session.py (the OpenAI Realtime relay + /ws/session websocket) -
+live_session.py (the Gemini Live API relay + /ws/session websocket) -
 see those modules for behavior notes.
 
 Run (after `pip install thirtytutors`):
@@ -23,7 +23,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from . import memory, openai_live_session, quizzes, routes_api, routes_pages, speech_detection
+from . import live_session, memory, quizzes, routes_api, routes_pages, speech_detection
 from .constants import ASSETS_DIR
 from .profiles_store import migrate_legacy_model_name, migrate_legacy_profile_state
 
@@ -74,7 +74,7 @@ app = FastAPI(lifespan=_warm_up_speaker_models)
 
 app.include_router(routes_pages.router)
 app.include_router(routes_api.router)
-app.include_router(openai_live_session.router)
+app.include_router(live_session.router)
 
 
 @app.middleware("http")
