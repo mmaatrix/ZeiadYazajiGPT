@@ -4,7 +4,7 @@ The browser still speaks the exact ThirtyTutors websocket protocol:
 init/start_turn/audio_chunk/turn_complete and hands-free/quiz messages.
 This module translates that protocol to OpenAI Realtime events, so the
 frontend, avatar, profiles, quizzes, memory, statistics, and speaker
-verification can remain intact while the Gemini Live backend is replaced by OpenAI Realtime.
+verification can remain intact while the original Gemini Live backend is replaced by OpenAI Realtime.
 """
 
 from __future__ import annotations
@@ -232,7 +232,7 @@ async def _configure_session(
                     "input": {
                         "format": {"type": "audio/pcm", "rate": 24000},
                         "transcription": {
-                            "model": "gpt-4o-transcribe",
+                            "model": "gpt-live-transcribe",
                             "prompt": (
                                 f"Language tutoring. The learner is practicing {target_language}; "
                                 f"their native language is {native_language}. Preserve names, numbers, "
