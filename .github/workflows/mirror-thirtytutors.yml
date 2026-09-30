@@ -1,0 +1,51 @@
+name: Mirror ThirtyTutors baseline
+
+on:
+  push:
+    paths:
+      - ".github/workflows/mirror-thirtytutors.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  mirror:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout destination
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Clone ThirtyTutors upstream
+        run: git clone --depth 1 https://github.com/wiss84/thirtytutors.git "$RUNNER_TEMP/upstream"
+
+      - name: Replace repository content with upstream baseline
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/keep"
+          cp .github/workflows/mirror-thirtytutors.yml "$RUNNER_TEMP/keep/mirror-thirtytutors.yml"
+
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -a "$RUNNER_TEMP/upstream/." .
+          rm -rf .git
+          git init
+          git remote add origin "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
+          git fetch origin main
+          git checkout -B main origin/main
+
+          mkdir -p .github/workflows
+          cp "$RUNNER_TEMP/keep/mirror-thirtytutors.yml" .github/workflows/mirror-thirtytutors.yml
+
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Replace scaffold with ThirtyTutors upstream baseline"
+          git push origin main
