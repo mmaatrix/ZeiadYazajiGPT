@@ -1,5 +1,5 @@
 """Periodic rolling-summary folding for a conversation's transcript. Split
-out of main.py; called from live_session.py both periodically (every
+out of main.py; called from openai_live_session.py both periodically (every
 memory.SUMMARY_FOLD_EVERY_N_TURNS turns) and once more on disconnect.
 """
 
@@ -102,6 +102,6 @@ def summarize_conversation(conversation_id: str, student_name: str, api_key: str
             print(
                 f"[summarize_conversation] updated summary for conversation={conversation_id!r} (through turn {new_turns[-1]['seq']}, +{len(vocab_items)} vocab items)"
             )
-    except (RuntimeError, OSError, ValueError, json.JSONDecodeError) as e:
+    except Exception as e:  # best-effort background memory fold
         print(f"[summarize_conversation] skipped for conversation={conversation_id!r}: {type(e).__name__}: {e}")
         traceback.print_exc()
