@@ -226,14 +226,13 @@ async def _configure_session(
             "type": "session.update",
             "session": {
                 "type": "realtime",
-                "model": model_name,
                 "output_modalities": ["audio"],
                 "instructions": instructions,
                 "audio": {
                     "input": {
                         "format": {"type": "audio/pcm", "rate": 24000},
                         "transcription": {
-                            "model": "gpt-live-transcribe",
+                            "model": "gpt-4o-transcribe",
                             "prompt": (
                                 f"Language tutoring. The learner is practicing {target_language}; "
                                 f"their native language is {native_language}. Preserve names, numbers, "
