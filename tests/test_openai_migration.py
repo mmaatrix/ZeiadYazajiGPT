@@ -3,7 +3,7 @@ import base64
 import numpy as np
 
 from thirtytutors import constants
-from thirtytutors.openai_live_session import _pcm16_16k_to_24k_b64
+from thirtytutors.live_session import _pcm16_16k_to_24k_b64
 from thirtytutors.tutor_tools import MOOD_TOOL, build_quiz_tool
 
 
@@ -44,7 +44,7 @@ class _FakeRealtimeSocket:
 def test_realtime_session_config_uses_24khz_audio():
     import asyncio
 
-    from thirtytutors.openai_live_session import _configure_session
+    from thirtytutors.live_session import _configure_session
 
     sock = _FakeRealtimeSocket()
     profile = {"id": "test-profile", "name": "Zeiad"}
@@ -74,4 +74,4 @@ def test_realtime_session_config_uses_24khz_audio():
     assert event["session"]["audio"]["input"]["format"]["rate"] == 24000
     assert event["session"]["audio"]["input"]["turn_detection"] is None
     assert event["session"]["audio"]["output"]["format"]["rate"] == 24000
-    assert event["session"]["audio"]["input"]["transcription"]["model"] == "gpt-4o-transcribe"
+    assert event["session"]["audio"]["input"]["transcription"]["model"] == "gpt-live-transcribe"
