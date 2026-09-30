@@ -1,4 +1,4 @@
-// ThirtyTutors - Settings modal (General/Account/Voice/Learning/Stats/Data
+// Zeiad English Coach - Settings modal (General/Account/Voice/Learning/Stats/Data
 // controls/Updates/About panes) - now loaded globally (index.html), not
 // just on the learning page, since the profile-menu button that opens it
 // (see profileMenu.js) is itself global.
@@ -702,7 +702,7 @@ settingsExportProfileBtn.addEventListener('click', async () => {
     a.href = url;
     const disposition = res.headers.get('Content-Disposition');
     const filenameMatch = disposition && disposition.match(/filename="?([^"]+)"?/);
-    a.download = filenameMatch ? filenameMatch[1] : 'Zeiad-English-Coach-backup.zip';
+    a.download = filenameMatch ? filenameMatch[1] : 'Zeiad English Coach-backup.zip';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -804,7 +804,7 @@ async function loadAboutPane() {
 }
 
 function renderAboutPane(info) {
-  settingsVersionText.textContent = `Zeiad English Coach v${info.version} · Zeiad Yazaji`;
+  settingsVersionText.textContent = `Zeiad English Coach v${info.version}`;
   settingsCreditsText.textContent = info.credits && info.credits.length
     ? `Built with ${info.credits.join(', ')}.`
     : '';
