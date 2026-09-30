@@ -266,24 +266,18 @@ def get_api_voice_name(voice_name: str) -> str:
     return VOICE_NAME_TO_API.get(voice_name, "marin")
 
 
-# OpenAI Realtime model choices. Keep the IDs identical to the API model IDs
-# so the selected value can be sent directly to the Realtime websocket.
+# OpenAI Realtime model choice. The current flagship Realtime model is used
+# as the single live tutor model to keep the UI/behavior aligned with the
+# original ThirtyTutors single-model experience.
 MODEL_OPTIONS = [
     {
         "id": "gpt-realtime-2.1",
-        "label": "GPT-Realtime-2.1 (Best)",
-        "rate_limit_note": "Current OpenAI Realtime model for natural speech-to-speech tutoring",
-        "supports_affective_dialog": True,
-    },
-    {
-        "id": "gpt-realtime-2.1-mini",
-        "label": "GPT-Realtime-2.1 Mini (Fast)",
-        "rate_limit_note": "Lower-cost Realtime option for faster practice sessions",
+        "label": "GPT-Realtime-2.1",
+        "rate_limit_note": "Current OpenAI Realtime speech-to-speech model",
         "supports_affective_dialog": True,
     },
 ]
 
-DEFAULT_MODEL = MODEL_OPTIONS[0]["id"]
 
 # Single source of truth for the package's version - pyproject.toml reads
 # this dynamically at build time (see its own
