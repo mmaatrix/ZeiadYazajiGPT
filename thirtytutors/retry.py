@@ -1,12 +1,7 @@
 """
-Retry helper for Gemini API calls (Live API connect + summarization).
+Retry helper for OpenAI API calls used by background summarization and other non-Realtime requests.
 
-AI Studio's free tier throws a fair number of transient errors - 500
-INTERNAL, 503 UNAVAILABLE, and occasionally 429 RESOURCE_EXHAUSTED even
-under modest use - that succeed if you just try again after a short wait.
-This is a single-user local app with exactly one Live session and one
-summarization call ever in flight at a time, so retry with backoff is all
-that's needed here - no quota tracking or concurrency gating.
+OpenAI API calls can fail transiently because of rate limits, server errors, timeouts, or network failures. This single-user local app retries those cases with bounded exponential backoff.
 """
 
 import logging
@@ -26,7 +21,7 @@ DEFAULT_BASE_BACKOFF = 2.0  # seconds, doubles each attempt
 def is_transient_error(e: Exception) -> bool:
     """Best-effort classification of 'worth retrying' vs 'will never work'.
 
-    The google-genai SDK raises ServerError for 5xx responses and
+    The OpenAI SDK raises ServerError for 5xx responses and
     ClientError for 4xx (429 included) - checking the class name avoids a
     hard import dependency on the exact error module path, which has moved
     before across SDK versions. ServerError is unconditionally transient;
@@ -37,28 +32,23 @@ def is_transient_error(e: Exception) -> bool:
     every ClientError (400 bad request, 401 auth, 404 unknown model) as
     retryable.
     """
-    if type(e).__name__ == "ServerError":
+    if type(e).__name__ in {
+        "RateLimitError",
+        "InternalServerError",
+        "APIConnectionError",
+        "APITimeoutError",
+    }:
         return True
-    text = str(e)
-    return any(
-        marker in text.upper()
-        for marker in (
-            "INTERNAL",
-            "UNAVAILABLE",
-            "RESOURCE_EXHAUSTED",
-            "429",
-            " 500",
-            " 503",
-        )
-    )
+    text = str(e).upper()
+    return any(marker in text for marker in ("429", " 500", " 502", " 503", " 504"))
 
 
 def is_network_error(e: Exception) -> bool:
     """True for failures that happened before any request even reached
-    Google - no internet, DNS resolution failure (socket.gaierror, seen in
+    OpenAI - no internet, DNS resolution failure (socket.gaierror, seen in
     practice as 'gaierror: [Errno 11001] getaddrinfo failed' on Windows
     with no connectivity), connection refused, etc. All of these are
-    OSError subclasses in the standard library; the google-genai SDK's own
+    OSError subclasses in the standard library; the OpenAI SDK's own
     ServerError/ClientError are not, so this can't misclassify a real (if
     unwelcome) 429/500/503 API response as a connectivity problem - those
     go through is_transient_error above instead. Distinguishing the two
@@ -67,7 +57,7 @@ def is_network_error(e: Exception) -> bool:
     of this and websocket.js's handling of the resulting 'kind': 'network'
     message.
     """
-    return isinstance(e, OSError)
+    return isinstance(e, OSError) or type(e).__name__ in {"APIConnectionError", "APITimeoutError"}
 
 
 def is_rate_limit_error(e: Exception) -> bool:
@@ -80,11 +70,11 @@ def is_rate_limit_error(e: Exception) -> bool:
     the raw exception text (see ws_session's use of this).
     """
     text = str(e).upper()
-    return "429" in text or "RESOURCE_EXHAUSTED" in text
+    return type(e).__name__ == "RateLimitError" or "429" in text or "RATE LIMIT" in text
 
 
 def parse_retry_delay(text: str) -> float | None:
-    """Extracts Google's own suggested retryDelay (e.g. 'retryDelay":
+    """Extracts a server-suggested retry delay (e.g. 'retryDelay":
     "23s"') from a 429 error message, if present - more accurate than a
     generic backoff guess when the server states exactly how long to wait.
     A flat 1s is added as a small safety margin."""
@@ -101,7 +91,7 @@ def call_with_retry(
     **kwargs,
 ) -> T:
     """Calls fn(*args, **kwargs), retrying on transient errors with
-    exponential backoff (or Google's own suggested retryDelay when a 429
+    exponential backoff (or a server-suggested retry delay when a 429
     response includes one). Re-raises immediately on a non-transient
     error, and re-raises the last error once max_retries is exhausted -
     the caller decides what "give up" means (summarization.py's
@@ -109,7 +99,7 @@ def call_with_retry(
     since a skipped summary fold isn't fatal and will be retried next time
     one is due).
 
-    Synchronous by design - built for the sync google-genai text-generation
+    Synchronous by design - built for the sync OpenAI text-generation
     call used by summarization, which itself runs inside asyncio.to_thread
     so a blocking time.sleep() here doesn't stall the event loop. The Live
     API connection has its own async retry loop instead
