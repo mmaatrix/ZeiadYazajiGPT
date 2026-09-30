@@ -22,7 +22,7 @@ DEFAULT_TARGET_LANGUAGE = "American English"
 
 # Non-realtime text model used for periodic rolling-summary folding.
 # This is intentionally separate from the Realtime audio model.
-SUMMARY_MODEL = "gpt-5.6-luna"
+SUMMARY_MODEL = "gpt-5.6-sol"
 
 # The original ThirtyTutors persona catalog is preserved for the UI. The
 # gender/pitch fields are app-level persona labels, not OpenAI metadata.
