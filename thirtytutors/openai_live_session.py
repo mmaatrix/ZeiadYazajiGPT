@@ -95,9 +95,31 @@ def _record_active_day(profile: dict) -> None:
 def _memory_context(conv: dict | None) -> tuple[str | None, list[str], list[str]]:
     if conv is None:
         return None, [], []
+
     summary_row = memory.get_summary(conv["id"])
+    based_on_turn = int(summary_row["based_on_turn"]) if summary_row else 0
+    recent_turns = memory.get_turns(conv["id"], since_seq=based_on_turn)
+
+    # Keep reconnects faithful even between summary folds. If there is no
+    # rolling summary yet, cap the raw replay context so an old conversation
+    # cannot make the system prompt grow without bound.
+    if not summary_row:
+        recent_turns = recent_turns[-16:]
+
+    pieces: list[str] = []
+    if summary_row and summary_row.get("summary"):
+        pieces.append(summary_row["summary"].strip())
+
+    if recent_turns:
+        rendered = []
+        for turn in recent_turns:
+            speaker = "Student" if turn.get("role") == "user" else "Tutor"
+            rendered.append(f"{speaker}: {turn.get('text', '').strip()}")
+        pieces.append("Recent conversation after the rolling summary:\n" + "\n".join(rendered))
+
+    durable_context = "\n\n".join(piece for piece in pieces if piece) or None
     return (
-        summary_row["summary"] if summary_row else None,
+        durable_context,
         memory.get_review_candidates(conv["id"]),
         memory.get_taught_vocab(conv["id"]),
     )
