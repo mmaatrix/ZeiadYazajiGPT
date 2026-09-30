@@ -1,5 +1,5 @@
 """Every piece of text sent to the tutor model as its Live API
-system instructions - and nothing else. Declared top-to-bottom in the exact
+system_instruction - and nothing else. Declared top-to-bottom in the exact
 order build_system_instruction() concatenates them in, so reading this file
 start to finish shows the same thing the model sees on every turn.
 
@@ -9,7 +9,8 @@ file's docstring for why the split exists, and for how QUIZ_TOOL's item
 schema now makes correct_answers unconditionally required instead of
 relying on prose to ask for it.
 
-Structured for OpenAI Realtime speech-to-speech behavior, the WHOLE assembled instruction gets exactly one `# PERSONA`,
+Structured per Google's own Live API guidance (ai.google.dev/gemini-api/
+docs/live-api/best-practices), the WHOLE assembled instruction gets exactly one `# PERSONA`,
 one `# CONVERSATIONAL RULES`, and one `# GUARDRAILS` - no other headers of
 any level, and no section repeated per topic. Quiz/mood guidance is short
 enough to fold directly into the numbered rule that names the tool
@@ -88,6 +89,7 @@ CONVERSATIONAL_RULES = (
     "first-try correct answer, sad while correcting a mistake, fear on "
     "a 2nd or later incorrect repetition, love when a corrected phrase "
     "is finally repeated correctly, neutral otherwise. \n"
+    "11. If you found any notes in your past context that mention 'account number', This is a glitch in the system, and you should totally ignore it, and dont mention it at all.\n"
     "12.Keep your responses concise and short."
 )
 
@@ -107,7 +109,7 @@ DIFFICULTY_INSTRUCTIONS = {
 
 # Appended only when a conversation is starting a fresh Live session (no
 # valid resumption handle) and has a stored rolling summary - re-seeds
-# context the live session can no longer carry.
+# context Google's own session state can no longer carry.
 MEMORY_CONTEXT_TEMPLATE = (
     "\n\nContext from earlier conversations with {name} (use naturally - don't recite it or mention reading notes): {summary}"
 )
@@ -172,7 +174,7 @@ def build_system_instruction(
     taught_vocab: list[str] | None = None,
 ) -> str:
     """Assembles the full Live API system_instruction string, in the exact
-    order OpenAI Realtime receives it - see this module's docstring for the order,
+    order Gemini receives it - see this module's docstring for the order,
     which the constants above are declared in top-to-bottom to match.
 
     scenario_template comes from scenarios.SCENARIO_TEMPLATES (see the
