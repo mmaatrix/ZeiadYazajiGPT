@@ -193,7 +193,7 @@ def run(host: str = "127.0.0.1", port: int = 8000) -> None:
 
     # Window size is set generously wide, since the sidebar + main layout
     webview.create_window(
-        "ThirtyTutors",
+        "Zeiad English Coach",
         # A cache-busting query string forces a fresh fetch on every launch,
         # regardless of anything already sitting in the persistent WebView2
         # profile's cache (see the private_mode=False note above).
