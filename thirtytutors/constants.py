@@ -27,7 +27,7 @@ DEFAULT_TARGET_LANGUAGE = "Polish"
 # too low for a summarization call firing every ~15 turns across active
 # conversations; gemini-3.1-flash-lite gives 500 RPD instead and is plenty
 # for this task.
-SUMMARY_MODEL = "gemini-3.1-flash-lite"
+SUMMARY_MODEL = "gpt-5.6-luna"
 
 # Official voice names + descriptors are from Google's docs
 # (ai.google.dev/gemini-api/docs/speech-generation), which label voices by
@@ -254,7 +254,22 @@ VOICE_OPTIONS = [
 # own `name`, but a few aliases map to a different underlying Google voice
 # so the avatar's photo and local sample stay intact while the API still
 # receives a valid voice identifier.
-VOICE_NAME_TO_API = {v["name"]: v.get("api_voice_name") or v["name"] for v in VOICE_OPTIONS}
+# The visual avatar library is kept exactly as in ThirtyTutors. OpenAI has a
+# smaller set of Realtime voices, so each existing avatar is mapped to one
+# OpenAI voice. The original gender labels above are ThirtyTutors' UI
+# metadata, not official OpenAI voice labels.
+_OPENAI_VOICES_A = ("marin", "coral", "shimmer", "verse")
+_OPENAI_VOICES_B = ("cedar", "echo", "ash", "sage", "ballad", "alloy")
+_voice_a_index = 0
+_voice_b_index = 0
+VOICE_NAME_TO_API = {}
+for _voice in VOICE_OPTIONS:
+    if _voice.get("gender") == "Female":
+        VOICE_NAME_TO_API[_voice["name"]] = _OPENAI_VOICES_A[_voice_a_index % len(_OPENAI_VOICES_A)]
+        _voice_a_index += 1
+    else:
+        VOICE_NAME_TO_API[_voice["name"]] = _OPENAI_VOICES_B[_voice_b_index % len(_OPENAI_VOICES_B)]
+        _voice_b_index += 1
 
 
 def get_api_voice_name(voice_name: str) -> str:
@@ -275,12 +290,13 @@ def get_api_voice_name(voice_name: str) -> str:
 # conversations that were already created while it was still an option.
 MODEL_OPTIONS = [
     {
-        "id": "gemini-3.1-flash-live-preview",
-        "label": "Gemini 3 Flash Live",
-        "rate_limit_note": "65K TPM",
-        "supports_affective_dialog": False,
+        "id": "gpt-realtime-2.1",
+        "label": "GPT Realtime 2.1",
+        "rate_limit_note": "OpenAI Realtime - highest quality",
+        "supports_affective_dialog": True,
     },
 ]
+
 DEFAULT_MODEL = MODEL_OPTIONS[0]["id"]
 
 # Single source of truth for the package's version - pyproject.toml reads
@@ -292,7 +308,7 @@ DEFAULT_MODEL = MODEL_OPTIONS[0]["id"]
 # importing this directly, falling back to this constant only if the
 # package isn't recognized as installed at all (e.g. running straight fromgit
 # a source checkout without ever having been pip-installed).
-APP_VERSION = "1.2.1"
+APP_VERSION = "1.3.0"
 
 # OS-appropriate per-user data directory (profiles.json, memory.db,
 # voice_enrollment/) instead of storing user data inside the package tree
@@ -302,7 +318,7 @@ APP_VERSION = "1.2.1"
 # rather than platformdirs' default doubled-up
 # %LOCALAPPDATA%\ThirtyTutors\ThirtyTutors.
 _OLD_DATA_DIR = Path(__file__).parent / "data"
-DATA_DIR = Path(user_data_dir("ThirtyTutors", appauthor=False))
+DATA_DIR = Path(user_data_dir("ZeiadEnglishCoach", appauthor=False))
 
 
 def _migrate_legacy_data_dir() -> None:
