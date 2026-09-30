@@ -1,0 +1,38 @@
+name: Zeiad OpenAI migration CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install project
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Compile all Python
+        run: python -m compileall -q thirtytutors
+
+      - name: Check active code for Gemini SDK imports
+        shell: bash
+        run: |
+          if grep -RInE 'from google import genai|google\.genai|from google\.genai' thirtytutors --include='*.py'; then
+            echo "Gemini SDK reference remains in active Python code"
+            exit 1
+          fi
+
+      - name: OpenAI migration smoke tests
+        run: pytest -q tests/test_openai_migration.py
