@@ -7,7 +7,7 @@ from thirtytutors.constants import (
     DEFAULT_TARGET_LANGUAGE,
     VOICE_NAME_TO_API,
 )
-from thirtytutors.openai_live_session import _pcm16_16k_to_24k_b64
+from thirtytutors.live_session import _pcm16_16k_to_24k_b64
 
 
 def test_openai_american_english_defaults():
