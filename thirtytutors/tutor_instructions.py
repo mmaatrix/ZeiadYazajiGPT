@@ -172,7 +172,7 @@ def build_system_instruction(
     taught_vocab: list[str] | None = None,
 ) -> str:
     """Assembles the full Live API system_instruction string, in the exact
-    order Gemini receives it - see this module's docstring for the order,
+    order OpenAI Realtime receives it - see this module's docstring for the order,
     which the constants above are declared in top-to-bottom to match.
 
     scenario_template comes from scenarios.SCENARIO_TEMPLATES (see the
