@@ -37,7 +37,7 @@ function connectWebSocket() {
   // open (the Retry button, or the 'online' event short-circuit below)
   // would abandon it without ever closing it - the server-side
   // ws_session() handler for that orphaned connection keeps running
-  // indefinitely (still holding a live OpenAI voice connection, still consuming
+  // indefinitely (still holding a live Gemini connection, still consuming
   // API quota) since nothing ever told it the client gave up on it.
   // manualClose=true first so the orphaned socket's own onclose doesn't
   // ALSO try to schedule a competing reconnect on top of the fresh one
@@ -136,21 +136,24 @@ function connectWebSocket() {
     if (msg.type === 'audio') {
       playAudioChunk(msg.data);
     } else if (msg.type === 'interrupted') {
-      // Deliberately no client action. This is OpenAI's signal that the
+      // Deliberately no client action. This is Gemini's signal that the
       // response in progress got cut short - normally meaning the user
       // started talking over it, but Google's own docs note it can also
       // fire with no client-side cause at all ("phantom interrupt"). This
-      // app's mic never forwards audio to OpenAI while the tutor is
+      // app's mic never forwards audio to Gemini while the tutor is
       // speaking in either mode (push-to-talk is gated on
       // isTutorSpeaking(); hands-free drops audio the same way - see
       // audio.js), so a genuine barge-in can't happen here - acting on
       // this signal would only ever be truncating the tutor's speech in
       // response to a phantom trigger.
     } else if (msg.type === 'transcript_in') {
-      // OpenAI's current live transcription is shown to the learner so both
-      // sides of the conversation remain visible. The persisted transcript
-      // is still the source used by memory and summaries.
-      appendOrCreateBubble('mine', msg.text);
+      // Deliberately not rendered - see transcript.js's renderConversationTranscript
+      // for the matching change on the history-reload path, and the reasoning
+      // (Gemini's own input_audio_transcription is frequently badly garbled for
+      // non-native/accented speech, unrelated to whether the model actually
+      // understood the audio correctly - showing it was more confusing than
+      // useful). The message itself still arrives and is still stored/
+      // summarized exactly as before - this only skips the UI bubble.
     } else if (msg.type === 'transcript_out') {
       appendOrCreateBubble('tutor', msg.text);
     } else if (msg.type === 'turn_complete') {
