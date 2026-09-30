@@ -177,7 +177,7 @@ def make_conversation(isolated_data_dir):
             "voice_name": "Kore",
             "native_language": "English",
             "target_language": "Polish",
-            "model_name": "gemini-3.1-flash-live-preview",
+            "model_name": "gpt-realtime-2.1",
             "scenario": "free_learning",
             "difficulty": "intermediate",
         }
