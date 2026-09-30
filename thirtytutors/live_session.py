@@ -30,6 +30,7 @@ from .constants import (
     DEFAULT_NATIVE_LANGUAGE,
     DEFAULT_TARGET_LANGUAGE,
     DEFAULT_VOICE,
+    MODEL_OPTIONS,
     HANDSFREE_SILENCE_RMS_THRESHOLD,
     HANDSFREE_WINDOW_BYTES,
     SPEAKER_VERIFICATION_THRESHOLD,
@@ -353,19 +354,41 @@ async def ws_session(websocket: WebSocket):
         profile.get("langfuse_base_url"),
     )
 
-    try:
-        openai_ws = await _connect_openai(profile.get("api_key"), model_name, profile)
-        await _configure_session(
-            openai_ws,
-            profile=profile,
-            conv_config=conv_config,
-            model_name=model_name,
-            summary_text=summary_text,
-            review_terms=review_terms,
-            taught_vocab=taught_vocab,
-        )
-    except Exception as exc:
-        print(f"[openai_ws_session] connect failed: {type(exc).__name__}: {exc}")
+    openai_ws = None
+    last_exc = None
+    model_candidates = [model_name] + [
+        option["id"] for option in MODEL_OPTIONS
+        if option["id"] != model_name
+    ]
+    for candidate_model in model_candidates:
+        try:
+            openai_ws = await _connect_openai(profile.get("api_key"), candidate_model, profile)
+            await _configure_session(
+                openai_ws,
+                profile=profile,
+                conv_config=conv_config,
+                model_name=candidate_model,
+                summary_text=summary_text,
+                review_terms=review_terms,
+                taught_vocab=taught_vocab,
+            )
+            model_name = candidate_model
+            break
+        except Exception as exc:
+            last_exc = exc
+            print(
+                f"[openai_ws_session] model {candidate_model} failed: "
+                f"{type(exc).__name__}: {exc}"
+            )
+            if openai_ws is not None:
+                try:
+                    await openai_ws.close()
+                except Exception:
+                    pass
+            openai_ws = None
+
+    if openai_ws is None:
+        exc = last_exc or RuntimeError("No OpenAI Realtime model could be started.")
         await websocket.send_json(_error_payload(exc))
         await websocket.send_json({"type": "session_status", "model_name": None, "unavailable": True})
         await websocket.close()
