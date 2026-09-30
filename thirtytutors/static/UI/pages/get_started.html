@@ -26,12 +26,12 @@
       <input id="nativeLanguageInput" type="text" class="text-input" autocomplete="off" />
 
       <label class="field-label" for="apiKeyInput">OpenAI API key</label>
-      <button id="watchApiKeyTutorialBtn" class="pill-btn api-key-tutorial-btn" type="button">Open OpenAI API key page</button>
+      <button id="watchApiKeyTutorialBtn" class="pill-btn api-key-tutorial-btn" type="button">▶ Watch a fast tutorial on how to get a OpenAI API key</button>
       <div class="field-row">
         <input id="apiKeyInput" type="password" class="text-input" placeholder="Paste your OpenAI API key" autocomplete="off" />
         <button id="toggleApiKeyBtn" class="icon-btn" type="button" title="Show/hide API key">👁️</button>
       </div>
-      <p class="field-hint">Create an API key in the <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">OpenAI API dashboard</a>. Realtime API usage is billed separately from a ChatGPT subscription.</p>
+      <p class="field-hint">To get a OpenAI API key, click the <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">OpenAI API dashboard</a> link, sign up, then click 'Create API key', copy the key and paste it above.</p>
 
       <label class="field-label" for="modelSelect">Model</label>
       <select id="modelSelect"></select>
@@ -55,7 +55,7 @@
 
 <div id="apiKeyTutorialOverlay">
   <div id="apiKeyTutorialModal">
-    <h2>OpenAI API key</h2>
+    <h2>How to get a OpenAI API key</h2>
     <video id="apiKeyTutorialVideo" src="/Get_API_Key.mp4" controls playsinline></video>
     <button id="closeApiKeyTutorialBtn" class="pill-btn" type="button" style="width:100%; margin-top:14px;">Close</button>
   </div>
