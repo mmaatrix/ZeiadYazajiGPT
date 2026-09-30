@@ -12,7 +12,7 @@ Self-hosted. Open-source. Powered by OpenAI Realtime API.
 
 Zeiad English Coach is a real-time voice conversation partner for learning a language, not a flashcard app and not a text chatbot. You hold down a key, speak, and a 3D avatar answers back out loud — in the language you're learning, correcting your mistakes, remembering what you've covered, and reacting with actual facial expressions while it talks.
 
-It runs entirely on your own machine, using your own OpenAI API key. Nothing about your conversations goes anywhere except directly to Google's OpenAI Realtime API — there's no backend service, no account, no analytics, no middleman.
+It runs entirely on your own machine, using your own OpenAI API key. Nothing about your conversations goes anywhere except directly to OpenAI's Realtime API — there's no backend service, no account, no analytics, no middleman.
 
 ```
 You hold to talk → speak → OpenAI Realtime API (audio in, audio out) → avatar lip-syncs the reply
@@ -35,7 +35,7 @@ You hold to talk → speak → OpenAI Realtime API (audio in, audio out) → ava
 
 Most "AI language tutors" tools are really just a chat window with a system prompt. That's fine for grammar explanations, but it doesn't train the thing that actually makes a language hard to speak: real-time listening and speaking under mild pressure, and actually correcting you as you go.
 
-Zeiad English Coach is built around the OpenAI **Live API** specifically because it's full-duplex audio — you talk, it listens and replies, in real time, the same shape as an actual conversation. On top of that:
+Zeiad English Coach is built around the OpenAI **Realtime API** specifically because it's full-duplex audio — you talk, it listens and replies, in real time, the same shape as an actual conversation. On top of that:
 
 - **It corrects you, every time.** The tutor is instructed not to let mistakes slide — wrong grammar, vocabulary, or pronunciation gets caught, explained in your native language, and drilled until you get it right.
 - **It has a face.** A 3D avatar lip-syncs to the reply and reacts with mood-appropriate expressions (encouraging, sympathetic, proud) — driven silently by the model itself, not a canned animation loop.
@@ -88,7 +88,7 @@ Zeiad English Coach is built around the OpenAI **Live API** specifically because
 ## Requirements
 
 - Python 3.11+
-- A free [OpenAI API dashboard](https://platform.openai.com/api-keys) API key (OpenAI's free tier is enough to use this)
+- An OpenAI API key from the [OpenAI API dashboard](https://platform.openai.com/api-keys)
 - A microphone and speakers
 - Windows or macOS (Linux likely works too — untested so far)
 
@@ -136,7 +136,7 @@ Prefer a browser tab over the desktop window? `thirtytutors` always opens as a n
 
 ## Limitations
 
-- **The displayed transcript of what you said is sometimes wrong, even when the tutor's reply isn't.** OpenAI Realtime API produces the on-screen transcript of your speech through a separate speech-to-text pass from the one the model actually listens with — so the tutor often responds correctly to what you actually said while the text shown for it is garbled, off-topic, or barely related. This is a OpenAI Realtime API characteristic, not something Zeiad English Coach's own audio pipeline can control or fix.
+- **The displayed transcript of what you said is sometimes wrong, even when the tutor's reply isn't.** OpenAI Realtime API produces the on-screen transcript of your speech through a separate speech-to-text pass from the one the model actually listens with — so the tutor often responds correctly to what you actually said while the text shown for it is garbled, off-topic, or barely related. This is an OpenAI Realtime API characteristic, not something Zeiad English Coach's own audio pipeline can control or fix.
 
 ---
 
@@ -187,4 +187,4 @@ ruff format . # format before a PR
 
 ---
 
-Built by [Wissam Metawee](https://github.com/wiss84)
+Modified and maintained by **Zeiad Yazaji**. Original ThirtyTutors project by [Wissam Metawee](https://github.com/wiss84).
