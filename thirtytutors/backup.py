@@ -171,7 +171,7 @@ def maybe_run_auto_backup(profile_id: str) -> bool:
 
     AUTO_BACKUP_DIR.mkdir(parents=True, exist_ok=True)
     stamp = datetime.now(UTC).strftime("%Y%m%d-%H%M%S")
-    dest_path = AUTO_BACKUP_DIR / f"ThirtyTutors-{_safe_filename_part(profile.get('name'))}-{stamp}.zip"
+    dest_path = AUTO_BACKUP_DIR / f"ZeiadYazajiGPT-{_safe_filename_part(profile.get('name'))}-{stamp}.zip"
     dest_path.write_bytes(build_profile_backup_zip(profile_id))
 
     memory.set_last_auto_backup_at(profile_id, datetime.now(UTC).isoformat())
