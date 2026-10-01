@@ -453,6 +453,7 @@ async def ws_session(websocket: WebSocket):
     tutor_chunks: list[str] = []
     seen_input_items: set[str] = set()
     tool_followup_pending = False
+    response_active = False
 
     mic_key = profile.get("mic_label") or DEFAULT_MIC_CALIBRATION_KEY
     mic_calibration = (profile.get("mic_calibrations") or {}).get(mic_key) or {}
@@ -571,6 +572,7 @@ async def ws_session(websocket: WebSocket):
             )
 
     async def browser_to_openai() -> None:
+        nonlocal response_active
         while True:
             msg = await websocket.receive_json()
             msg_type = msg.get("type")
@@ -579,8 +581,11 @@ async def ws_session(websocket: WebSocket):
                 continue
 
             if msg_type == "start_turn":
-                # Barge-in: cancel any active Realtime response before accepting the new turn.
-                await _send_openai(openai_ws, {"type": "response.cancel"})
+                # Barge-in: cancel only when a response is actually active. Sending
+                # response.cancel while idle causes an avoidable Realtime API error.
+                if response_active:
+                    await _send_openai(openai_ws, {"type": "response.cancel"})
+                    response_active = False
                 await _send_openai(openai_ws, {"type": "input_audio_buffer.clear"})
             elif msg_type == "audio_chunk":
                 converted = _pcm16_16k_to_24k_b64(msg.get("data") or "")
@@ -649,13 +654,17 @@ async def ws_session(websocket: WebSocket):
                 return
 
     async def openai_to_browser() -> None:
-        nonlocal tool_followup_pending
+        nonlocal tool_followup_pending, response_active
 
         async for raw in openai_ws:
             event = json.loads(raw)
             event_type = event.get("type")
 
-            if event_type == "response.output_audio.delta":
+            if event_type == "response.created":
+                response_active = True
+
+            elif event_type == "response.output_audio.delta":
+                response_active = True
                 delta = event.get("delta")
                 if delta:
                     await websocket.send_json({"type": "audio", "data": delta})
@@ -676,6 +685,7 @@ async def ws_session(websocket: WebSocket):
                     await websocket.send_json({"type": "transcript_in", "text": transcript})
 
             elif event_type == "response.done":
+                response_active = False
                 response = event.get("response") or {}
                 output = response.get("output") or []
                 calls = [
