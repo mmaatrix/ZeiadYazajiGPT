@@ -2,7 +2,7 @@
 
 **An AI language tutor that talks with you, remembers you, and has a face.**
 
-![Zeiad English Coach AI tutor conversation demo](https://raw.githubusercontent.com/wiss84/thirtytutors/main/thirtytutors/static/images/demo.gif)
+![Zeiad English Coach AI tutor conversation demo](https://raw.githubusercontent.com/mmaatrix/ZeiadYazajiGPT/main/thirtytutors/static/images/demo.gif)
 
 Self-hosted. Open-source. Powered by OpenAI Realtime API.
 
@@ -35,7 +35,7 @@ You hold to talk → speak → OpenAI Realtime API (audio in, audio out) → ava
 
 Most "AI language tutors" tools are really just a chat window with a system prompt. That's fine for grammar explanations, but it doesn't train the thing that actually makes a language hard to speak: real-time listening and speaking under mild pressure, and actually correcting you as you go.
 
-Zeiad English Coach is built around the OpenAI **Realtime API** specifically because it's full-duplex audio — you talk, it listens and replies, in real time, the same shape as an actual conversation. On top of that:
+Zeiad English Coach is built around the OpenAI **Realtime API** because it supports speech-to-speech interaction, low-latency turn taking, interruptions, and realtime tool use. On top of that:
 
 - **It corrects you, every time.** The tutor is instructed not to let mistakes slide — wrong grammar, vocabulary, or pronunciation gets caught, explained in your native language, and drilled until you get it right.
 - **It has a face.** A 3D avatar lip-syncs to the reply and reacts with mood-appropriate expressions (encouraging, sympathetic, proud) — driven silently by the model itself, not a canned animation loop.
@@ -47,19 +47,19 @@ Zeiad English Coach is built around the OpenAI **Realtime API** specifically bec
 ## Screenshots
 
 ### Create a new profile
-![Create Profile](https://raw.githubusercontent.com/wiss84/thirtytutors/main/thirtytutors/static/images/home.webp)
+![Create Profile](https://raw.githubusercontent.com/mmaatrix/ZeiadYazajiGPT/main/thirtytutors/static/images/home.webp)
 
 ### Login to existing profile
-![Profile Page](https://raw.githubusercontent.com/wiss84/thirtytutors/main/thirtytutors/static/images/Create_profile.webp)
+![Profile Page](https://raw.githubusercontent.com/mmaatrix/ZeiadYazajiGPT/main/thirtytutors/static/images/Create_profile.webp)
 
 ### Avatar & voice selection
-![Profile Page](https://raw.githubusercontent.com/wiss84/thirtytutors/main/thirtytutors/static/images/Existing_profile.webp)
+![Profile Page](https://raw.githubusercontent.com/mmaatrix/ZeiadYazajiGPT/main/thirtytutors/static/images/Existing_profile.webp)
 
 ### Learning Session Page
-![Profile Page](https://raw.githubusercontent.com/wiss84/thirtytutors/main/thirtytutors/static/images/Pick_Tutor.webp)
+![Profile Page](https://raw.githubusercontent.com/mmaatrix/ZeiadYazajiGPT/main/thirtytutors/static/images/Pick_Tutor.webp)
 
 ### Learning Session (Full Screen) Page
-![Profile Page](https://raw.githubusercontent.com/wiss84/thirtytutors/main/thirtytutors/static/images/Session.webp)
+![Profile Page](https://raw.githubusercontent.com/mmaatrix/ZeiadYazajiGPT/main/thirtytutors/static/images/Session.webp)
 
 ---
 
@@ -78,10 +78,10 @@ Zeiad English Coach is built around the OpenAI **Realtime API** specifically bec
 - **Home page & profile switching** — the app opens on a real home page every launch (your last-active profile stays logged in automatically), with a permanent profile-switcher icon and a profile menu for Settings/switching from anywhere
 - **Roleplay scenarios** — free conversation, ordering at a café, checking in at an airport, asking for directions, and more
 - **Three difficulty levels** — beginner, intermediate, advanced, adjustable per conversation
-- **Automatic model fallback** — if one OpenAI Realtime model is unavailable, Zeiad English Coach transparently retries on a second one
+- **Automatic model fallback** — if the primary OpenAI Realtime model is unavailable, Zeiad English Coach transparently retries on the lower-cost Realtime fallback
 - **Export your notes** — print or export a conversation's vocabulary/mistake log to Word
 - **Built-in update notifications** — a bell in the top bar lets you know when a new app version or a refreshed avatar/voice library is available, with a one-click update-and-relaunch
-- **100% self-hosted** — your own API key, your data stays on your machine, no cloud service in between (Except for Google, but you can opt-out via Account's OpenAI Apps Activity page).
+- **Local-first data** — profiles, conversations, quizzes, progress, and voice-enrollment data are stored locally. Audio and transcription are sent directly to OpenAI when you use the tutor.
 
 ---
 
@@ -98,26 +98,25 @@ Zeiad English Coach is built around the OpenAI **Realtime API** specifically bec
 
 A virtual environment is recommended, same as any Python package:
 ```bash
-conda create -n thirtytutors python=3.11 -y
-conda activate thirtytutors
-pip install thirtytutors
-thirtytutors setup          # install extras + download assets + create shortcut, without launching
+git clone https://github.com/mmaatrix/ZeiadYazajiGPT.git
+cd ZeiadYazajiGPT
+Start_Zeiad_English_Coach.bat          # install extras + download assets + create shortcut, without launching
 ```
 
 That's it. The first run does a one-time setup automatically: installs the two extra packages hands-free mode needs, downloads the avatar/voice/photo assets (~372MB) and the landing page's video/gif assets (~84MB) — 455MB total, so this part takes a couple of minutes — and creates a desktop shortcut for you — then opens the app. Every run after that just opens the app straight away, no repeated setup, whether you launch it via `thirtytutors` again or the new desktop shortcut.
 
-No `.env` file or API key setup needed - you'll paste your own OpenAI API key directly into the app the first time you create a profile.
+No `.env` file is required. Enter your own OpenAI API key in the app when you create or edit a profile.
 
 Want more control over the one-time setup, or need to re-run it (e.g. after a broken install)?
 
 ```bash
-thirtytutors setup --force  # same, but re-downloads assets even if already up to date
-thirtytutors --host 0.0.0.0 --port 8080   # override the default 127.0.0.1:8000
+python -m thirtytutors setup --force  # re-download assets if needed
+python -m thirtytutors --host 0.0.0.0 --port 8080   # override the default 127.0.0.1:8000
 ```
 
 ## Run it
 
-After the first-run setup, just use the desktop shortcut it created, or run `thirtytutors` again from a terminal.
+On Windows, double-click `Start_Zeiad_English_Coach.bat`, or use the desktop shortcut created by first-run setup. From a terminal, run `zeiad-english-coach` or `python -m thirtytutors`.
 
 Prefer a browser tab over the desktop window? `thirtytutors` always opens as a native app window - if you'd rather run it as a plain local web server instead, clone the repo and run `uvicorn thirtytutors.main:app --reload --port 8000` against a source checkout (see Contributing below), then open `http://127.0.0.1:8000/`.
 
@@ -166,7 +165,7 @@ pip install -e ".[dev]"
 thirtytutors setup   # one-time: extra deps + assets + shortcut
 ```
 
-`pip install -e .` means the `thirtytutors` command runs directly against your live source tree - no separate build/reinstall step needed while iterating.
+`pip install -e .` means the `zeiad-english-coach` command runs directly against your live source tree - no separate build/reinstall step needed while iterating.
 
 There isn't a formal contribution guide yet, so when in doubt, keep changes focused, run `pytest` before opening a PR, and describe what you tested manually for anything touching the frontend or the Live API relay (some of it - real-time audio, the actual avatar rendering - isn't practical to cover with automated tests).
 
