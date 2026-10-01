@@ -54,6 +54,6 @@ def test_build_quiz_tool_interpolates_the_given_languages():
     tool = build_quiz_tool(native_language="Polish", target_language="Japanese")
     item_props = tool["parameters"]["properties"]["items"]["items"]["properties"]
     assert "Polish" in item_props["question"]["description"]
-    assert "{native_language}" not in item_props["question"].description
+    assert "{native_language}" not in item_props["question"]["description"]
     assert "Japanese" in item_props["choices"]["description"]
-    assert "{target_language}" not in item_props["choices"].description
+    assert "{target_language}" not in item_props["choices"]["description"]
