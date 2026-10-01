@@ -120,25 +120,52 @@ def _transcribe_pcm16(pcm_bytes: bytes) -> str:
         ).strip()
 
 
-def _recent_messages(conversation_id: str | None, system_instruction: str) -> list[dict]:
-    local_instruction = (
-        system_instruction
-        + "\n\n# LOCAL FREE MODE\n"
-        "Reply with plain natural tutoring text only. Do not output internal reasoning, "
-        "<think> blocks, JSON, function calls, or tool-call narration. The live tool "
-        "functions mentioned elsewhere are unavailable in this mode. Keep ordinary "
-        "spoken replies concise, usually 1-4 sentences."
-    )
-    messages = [{"role": "system", "content": local_instruction}]
+def _recent_messages(
+    conversation_id: str | None,
+    profile: dict,
+    conv_config: dict,
+) -> list[dict]:
+    """Build a compact prompt tuned for a small local model.
+
+    The cloud prompt contains tool-call rules for Realtime quizzes/moods.
+    Those rules confuse a local text model that has no function-calling
+    transport, so Local Free gets an intentionally smaller tutoring prompt.
+    """
+    name = profile.get("name") or "the student"
+    native_language = conv_config.get("native_language") or "Arabic"
+    target_language = conv_config.get("target_language") or "American English"
+    difficulty = conv_config.get("difficulty") or "intermediate"
+    scenario = conv_config.get("scenario") or "free conversation"
+
+    instruction = f"""
+You are Zeiad English Coach, an expert and friendly American English conversation tutor.
+Student: {name}
+Native language: {native_language}
+Target: {target_language}
+Level: {difficulty}
+Current lesson/scenario: {scenario}
+
+Rules:
+- Understand imperfect learner English and answer the meaning, not just the grammar.
+- Give a useful direct answer first. Never pretend you cannot answer a normal everyday question.
+- When the learner makes an important English mistake, briefly show the natural American version after answering.
+- If the learner uses Arabic, you may explain briefly in Arabic, then continue the English practice.
+- If the speech transcript is unclear or nonsensical, ask the learner to repeat it instead of inventing an answer.
+- Use natural everyday American English, not textbook wording.
+- Ask at most one short follow-up question at a time.
+- Keep spoken replies concise: normally 1-4 sentences.
+- Output plain text only. No markdown, JSON, tool calls, hidden reasoning, or <think> blocks.
+""".strip()
+
+    messages = [{"role": "system", "content": instruction}]
     if conversation_id:
-        for turn in memory.get_turns(conversation_id)[-16:]:
+        for turn in memory.get_turns(conversation_id)[-12:]:
             text = (turn.get("text") or "").strip()
             if not text:
                 continue
             role = "assistant" if turn.get("role") == "tutor" else "user"
             messages.append({"role": role, "content": text})
     return messages
-
 
 def _ollama_chat(model_name: str, messages: list[dict]) -> str:
     data = _ollama_request(
@@ -149,7 +176,12 @@ def _ollama_chat(model_name: str, messages: list[dict]) -> str:
             "stream": False,
             "think": False,
             "keep_alive": "30m",
-            "options": {"temperature": 0.65, "num_ctx": 4096},
+            "options": {
+                "temperature": 0.45,
+                "top_p": 0.9,
+                "num_ctx": 4096,
+                "num_predict": 220,
+            },
         },
         timeout=180,
     )
@@ -310,6 +342,7 @@ async def run_local_session(
             "resumed": False,
             "conversation_name": (conv or {}).get("name"),
             "model_name": f"Local Free · {local_model}",
+            "provider": "local",
         }
     )
 
@@ -356,7 +389,8 @@ async def run_local_session(
 
             messages = _recent_messages(
                 conv["id"] if conv is not None else None,
-                system_instruction,
+                profile,
+                conv_config,
             )
             if conv is None or not store_user:
                 messages.append({"role": "user", "content": text})
