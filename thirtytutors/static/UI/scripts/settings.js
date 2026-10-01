@@ -37,6 +37,9 @@ const settingsSaveGeneralBtn = document.getElementById('settingsSaveGeneralBtn')
 attachLanguageAutocomplete(settingsNativeLanguageInput);
 
 // Account
+const settingsAiProviderSelect = document.getElementById('settingsAiProviderSelect');
+const settingsAiProviderStatus = document.getElementById('settingsAiProviderStatus');
+const settingsOpenAiGroup = document.getElementById('settingsOpenAiGroup');
 const settingsApiKeyInput = document.getElementById('settingsApiKeyInput');
 const settingsToggleApiKeyBtn = document.getElementById('settingsToggleApiKeyBtn');
 const settingsSaveApiKeyBtn = document.getElementById('settingsSaveApiKeyBtn');
@@ -189,7 +192,17 @@ settingsThemeToggle.querySelectorAll('.theme-option').forEach((btn) => {
 
 // --- Account ---
 
+function refreshAiProviderUi() {
+  const provider = settingsAiProviderSelect.value || 'local';
+  settingsOpenAiGroup.hidden = provider !== 'openai';
+  settingsAiProviderStatus.textContent = provider === 'local'
+    ? 'Local Free uses Ollama + Qwen3 8B on this PC. No OpenAI API balance is required.'
+    : 'OpenAI Realtime uses your API key and separate API billing.';
+}
+
 function populateAccountPane() {
+  settingsAiProviderSelect.value = currentProfile.ai_provider || 'local';
+  refreshAiProviderUi();
   settingsApiKeyInput.value = currentProfile.api_key || '';
   settingsApiKeyInput.type = 'password';
   settingsToggleApiKeyBtn.textContent = '\ud83d\udc41\ufe0f';
@@ -205,6 +218,25 @@ function populateAccountPane() {
   settingsLangfuseStatus.textContent = '';
 }
 
+settingsAiProviderSelect.addEventListener('change', async () => {
+  const ai_provider = settingsAiProviderSelect.value;
+  refreshAiProviderUi();
+  settingsAiProviderStatus.textContent = 'Saving...';
+  try {
+    const res = await fetch(`/api/profiles/${currentProfile.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ai_provider }),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    currentProfile.ai_provider = ai_provider;
+    refreshAiProviderUi();
+    settingsAiProviderStatus.textContent += ' Takes effect on the next connection.';
+  } catch (e) {
+    settingsAiProviderStatus.textContent = 'Could not save AI engine.';
+  }
+});
+
 settingsToggleApiKeyBtn.addEventListener('click', () => {
   const showing = settingsApiKeyInput.type === 'text';
   settingsApiKeyInput.type = showing ? 'password' : 'text';
@@ -213,17 +245,20 @@ settingsToggleApiKeyBtn.addEventListener('click', () => {
 
 settingsSaveApiKeyBtn.addEventListener('click', async () => {
   const value = settingsApiKeyInput.value.trim();
-  if (!value) { settingsApiKeyStatus.textContent = 'API key cannot be empty.'; return; }
+  if (!value && settingsAiProviderSelect.value === 'openai') {
+    settingsApiKeyStatus.textContent = 'OpenAI Realtime requires an API key.';
+    return;
+  }
   settingsSaveApiKeyBtn.disabled = true;
   settingsApiKeyStatus.textContent = 'Saving...';
   try {
     await fetch(`/api/profiles/${currentProfile.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ api_key: value }),
+      body: JSON.stringify({ api_key: value || null }),
     });
-    currentProfile.api_key = value;
-    settingsApiKeyStatus.textContent = 'Saved - takes effect on your next connect.';
+    currentProfile.api_key = value || null;
+    settingsApiKeyStatus.textContent = value ? 'Saved - takes effect on your next connect.' : 'API key cleared.';
   } catch (e) {
     settingsApiKeyStatus.textContent = 'Could not save - check your connection.';
   } finally {
