@@ -90,3 +90,26 @@ jobs:
       - run: pip install build twine
       - run: python -m build
       - run: twine check dist/*
+
+  windows-smoke:
+    name: Windows 11 compatibility smoke test
+    runs-on: windows-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Upgrade build tools
+        run: python -m pip install --upgrade pip setuptools wheel
+      - name: Install CPU-only torch
+        run: pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Install package and Windows extras
+        run: |
+          pip install -e ".[dev]"
+          pip install webrtcvad-wheels
+          pip install --no-deps resemblyzer
+      - name: Compile Python sources
+        run: python -m compileall -q thirtytutors tests
+      - name: Run Windows test suite
+        run: pytest tests/ -x --tb=short -q
