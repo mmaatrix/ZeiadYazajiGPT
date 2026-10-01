@@ -64,6 +64,7 @@ Issues = "https://github.com/mmaatrix/ZeiadYazajiGPT/issues"
 
 [project.scripts]
 thirtytutors = "thirtytutors.cli:main"
+zeiad-english-coach = "thirtytutors.cli:main"
 
 [tool.setuptools.dynamic]
 # Single source of truth for the version is thirtytutors/constants.py's
