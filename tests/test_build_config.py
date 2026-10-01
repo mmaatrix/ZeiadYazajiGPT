@@ -13,9 +13,9 @@ values actually get interpolated, and the tool schema declares what it's
 supposed to.
 """
 
-from thirtytutors import live_session, quizzes
-from thirtytutors.tutor_instructions import SPACED_REPETITION_CONTEXT_TEMPLATE, TAUGHT_VOCAB_CONTEXT_TEMPLATE
-from thirtytutors.tutor_tools import build_quiz_tool
+from ZeiadYazajiGPT import live_session, quizzes
+from ZeiadYazajiGPT.tutor_instructions import SPACED_REPETITION_CONTEXT_TEMPLATE, TAUGHT_VOCAB_CONTEXT_TEMPLATE
+from ZeiadYazajiGPT.tutor_tools import build_quiz_tool
 
 
 def _minimal_profile():

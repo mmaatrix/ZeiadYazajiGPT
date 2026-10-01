@@ -12,7 +12,7 @@ test.
 
 import pytest
 
-from thirtytutors import desktop
+from ZeiadYazajiGPT import desktop
 
 pytestmark = pytest.mark.unit
 

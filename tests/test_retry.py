@@ -6,7 +6,7 @@ import time
 
 import pytest
 
-from thirtytutors import retry
+from ZeiadYazajiGPT import retry
 
 pytestmark = pytest.mark.unit
 

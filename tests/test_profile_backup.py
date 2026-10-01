@@ -10,8 +10,8 @@ profile's data staying completely untouched throughout.
 import numpy as np
 import pytest
 
-from thirtytutors import memory, profiles_store, quizzes
-from thirtytutors.speech_detection import enrollment
+from ZeiadYazajiGPT import memory, profiles_store, quizzes
+from ZeiadYazajiGPT.speech_detection import enrollment
 
 pytestmark = pytest.mark.integration
 

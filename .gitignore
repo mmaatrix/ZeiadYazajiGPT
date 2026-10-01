@@ -31,11 +31,11 @@ Thumbs.db
 # Personal
 design_plans/
 debugging_server_errors/
-thirtytutors/static/UI/avatar_test/
-thirtytutors/static/UI/game_test/
-ThirtyTutors.bat
+ZeiadYazajiGPT/static/UI/avatar_test/
+ZeiadYazajiGPT/static/UI/game_test/
+ZeiadYazajiGPT.bat
 Test_suite.bat
 packaging/
-ThirtyTutors.spec
+ZeiadYazajiGPT.spec
 
 
