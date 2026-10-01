@@ -2,7 +2,7 @@
 FastAPI app entrypoint: static/template setup, middleware, and router
 wiring. Route logic itself lives in routes_pages.py (page shells),
 routes_api.py (reference-data + profile/conversation REST), and
-live_session.py (the Gemini Live API relay + /ws/session websocket) -
+live_session.py (local/OpenAI voice-session router + /ws/session websocket) -
 see those modules for behavior notes.
 
 Run (after `pip install thirtytutors`):
