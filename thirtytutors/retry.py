@@ -41,7 +41,7 @@ def is_transient_error(e: Exception) -> bool:
     }:
         return True
     text = str(e).upper()
-    return any(marker in text for marker in ("429", " 500", " 502", " 503", " 504"))
+    return bool(re.search(r"\\b(?:429|500|502|503|504)\\b", text))
 
 
 def is_network_error(e: Exception) -> bool:
