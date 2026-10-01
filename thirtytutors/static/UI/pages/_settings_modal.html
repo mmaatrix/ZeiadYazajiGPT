@@ -48,15 +48,24 @@
       <div class="settings-pane" data-pane="account" hidden>
         <h3>Account</h3>
 
-        <label class="field-label" for="settingsApiKeyInput">OpenAI API key</label>
-        <div class="field-row">
-          <input id="settingsApiKeyInput" type="password" class="text-input" autocomplete="off" />
-          <button id="settingsToggleApiKeyBtn" class="icon-btn" type="button" title="Show/hide API key">&#128065;&#65039;</button>
-        </div>
-        <p class="field-hint">From <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">OpenAI API dashboard</a>. Stored on this profile only.</p>
+        <label class="field-label" for="settingsAiProviderSelect">AI engine</label>
+        <select id="settingsAiProviderSelect">
+          <option value="local">Local Free - Ollama / Qwen3 8B (no API charges)</option>
+          <option value="openai">OpenAI Realtime API</option>
+        </select>
+        <p class="field-hint" id="settingsAiProviderStatus">Local Free runs the tutor on this PC. OpenAI is optional.</p>
 
-        <button id="settingsSaveApiKeyBtn" class="primary-btn" type="button" style="margin-top:10px;">Save key</button>
-        <p class="field-hint" id="settingsApiKeyStatus"></p>
+        <div id="settingsOpenAiGroup">
+          <label class="field-label" for="settingsApiKeyInput" style="margin-top:14px;">OpenAI API key (optional)</label>
+          <div class="field-row">
+            <input id="settingsApiKeyInput" type="password" class="text-input" autocomplete="off" />
+            <button id="settingsToggleApiKeyBtn" class="icon-btn" type="button" title="Show/hide API key">&#128065;&#65039;</button>
+          </div>
+          <p class="field-hint">Only needed when AI engine is OpenAI Realtime. From <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">OpenAI API dashboard</a>.</p>
+
+          <button id="settingsSaveApiKeyBtn" class="primary-btn" type="button" style="margin-top:10px;">Save / clear key</button>
+          <p class="field-hint" id="settingsApiKeyStatus"></p>
+        </div>
 
         <hr class="modal-divider" style="margin-top:18px; margin-bottom:18px;">
 
