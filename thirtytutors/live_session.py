@@ -73,7 +73,7 @@ def _validate_quiz_items(items: list[dict]) -> None:
         answer_count = len(item.get("correct_answers") or [])
         if blank_count != answer_count:
             print(
-                f"[start_quiz] item {idx}: {blank_count} blanks vs "
+                f"[start_quiz] item {idx}: mismatch - {blank_count} blanks vs "
                 f"{answer_count} correct answers"
             )
 
