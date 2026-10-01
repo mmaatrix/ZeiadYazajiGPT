@@ -99,6 +99,9 @@ def get_app_info():
         version = APP_VERSION
     return {
         "version": version,
+        "product": "Zeiad English Coach",
+        "developer": "Zeiad Yazaji",
+        "github": "https://github.com/mmaatrix",
         "credits": ["OpenAI Realtime API", "Resemblyzer", "TalkingHead", "ThirtyTutors upstream"],
     }
 
