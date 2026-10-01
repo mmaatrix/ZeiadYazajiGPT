@@ -455,6 +455,7 @@ async def ws_session(websocket: WebSocket):
         "resumed": False,
         "conversation_name": (conv or {}).get("name"),
         "model_name": model_name,
+        "provider": "openai",
     })
 
     session_started = time.monotonic()
