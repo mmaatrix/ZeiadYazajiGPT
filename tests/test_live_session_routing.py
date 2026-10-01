@@ -190,6 +190,7 @@ def test_openai_function_call_is_executed_and_followed_by_response(
         })
         ws.send_json({"type": "turn_complete"})
 
+        assert ws.receive_json()["type"] == "transcript_in"
         assert ws.receive_json()["type"] == "mood_change"
         assert ws.receive_json()["type"] == "transcript_out"
         assert ws.receive_json()["type"] == "audio"
