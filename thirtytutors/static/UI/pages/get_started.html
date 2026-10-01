@@ -25,17 +25,26 @@
       <label class="field-label" for="nativeLanguageInput">Type your native language</label>
       <input id="nativeLanguageInput" type="text" class="text-input" autocomplete="off" />
 
-      <label class="field-label" for="apiKeyInput">OpenAI API key</label>
-      <button id="watchApiKeyTutorialBtn" class="pill-btn api-key-tutorial-btn" type="button">▶ Watch a fast tutorial on how to get an OpenAI API key</button>
-      <div class="field-row">
-        <input id="apiKeyInput" type="password" class="text-input" placeholder="Paste your OpenAI API key" autocomplete="off" />
-        <button id="toggleApiKeyBtn" class="icon-btn" type="button" title="Show/hide API key">👁️</button>
-      </div>
-      <p class="field-hint">To get a OpenAI API key, click the <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">OpenAI API dashboard</a> link, sign up, then click 'Create API key', copy the key and paste it above.</p>
+      <label class="field-label" for="aiProviderSelect">AI engine</label>
+      <select id="aiProviderSelect">
+        <option value="local" selected>Local Free - Ollama / Qwen3 8B (no API charges)</option>
+        <option value="openai">OpenAI Realtime API</option>
+      </select>
+      <p class="field-hint" id="localAiHint">Recommended for this PC: Qwen3 8B runs locally through Ollama. No OpenAI API balance is required.</p>
 
-      <label class="field-label" for="modelSelect">Model</label>
-      <select id="modelSelect"></select>
-      <p class="field-hint" id="modelHint"></p>
+      <div id="openAiSetupFields" hidden>
+        <label class="field-label" for="apiKeyInput">OpenAI API key</label>
+        <button id="watchApiKeyTutorialBtn" class="pill-btn api-key-tutorial-btn" type="button">▶ Watch a fast tutorial on how to get an OpenAI API key</button>
+        <div class="field-row">
+          <input id="apiKeyInput" type="password" class="text-input" placeholder="Paste your OpenAI API key" autocomplete="off" />
+          <button id="toggleApiKeyBtn" class="icon-btn" type="button" title="Show/hide API key">👁️</button>
+        </div>
+        <p class="field-hint">Only needed for OpenAI Realtime. API billing is separate from ChatGPT Plus.</p>
+
+        <label class="field-label" for="modelSelect">OpenAI model</label>
+        <select id="modelSelect"></select>
+        <p class="field-hint" id="modelHint"></p>
+      </div>
 
       <div class="sidebar-section" style="margin-top: 20px;">
         <h3>Microphone</h3>
