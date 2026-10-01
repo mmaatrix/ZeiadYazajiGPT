@@ -33,8 +33,11 @@ def is_transient_error(e: Exception) -> bool:
         "APITimeoutError",
     }:
         return True
-    text = str(e).upper()
-    return bool(re.search(r"\b(?:429|500|502|503|504)\b", text)) or "INTERNAL ERROR" in text
+    text = str(e).upper().strip()
+    return (
+        text.startswith(("429", "500", "502", "503", "504"))
+        or "INTERNAL ERROR" in text
+    )
 
 
 def is_network_error(e: Exception) -> bool:
