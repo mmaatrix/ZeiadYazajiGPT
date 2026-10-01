@@ -96,6 +96,8 @@ ZeiadYazajiGPT is built around the Gemini **Live API** specifically because it's
 
 ## Setup
 
+> **Windows 11 / PowerShell:** see [WINDOWS_POWERSHELL.md](WINDOWS_POWERSHELL.md) for copy/paste installation and launch commands.
+
 A virtual environment is recommended, same as any Python package:
 ```bash
 conda create -n ZeiadYazajiGPT python=3.11 -y
