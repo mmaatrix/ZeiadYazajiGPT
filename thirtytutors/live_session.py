@@ -1,6 +1,7 @@
-"""OpenAI Realtime relay for the ThirtyTutors-derived browser protocol.
+"""Voice-session router for the ThirtyTutors-derived browser protocol.
 
-The browser still speaks the exact ThirtyTutors websocket protocol:
+Local Free mode uses Ollama + faster-whisper + the Windows local speech synthesizer.
+OpenAI Realtime remains available as an optional provider. The browser still speaks the exact ThirtyTutors websocket protocol:
 init/start_turn/audio_chunk/turn_complete and hands-free/quiz messages.
 This module translates that protocol to OpenAI Realtime events, so the
 frontend, avatar, profiles, quizzes, memory, statistics, and speaker
@@ -380,6 +381,28 @@ async def ws_session(websocket: WebSocket):
         profile.get("langfuse_secret_key"),
         profile.get("langfuse_base_url"),
     )
+
+    # Local Free is the default for this fork so a paid OpenAI API balance is
+    # not required. Existing profiles created before ai_provider existed also
+    # fall back to local. OpenAI Realtime remains selectable in Settings.
+    provider = (profile.get("ai_provider") or "local").strip().lower()
+    if provider == "local":
+        from .local_session import run_local_session
+
+        await run_local_session(
+            websocket,
+            profile=profile,
+            conv=conv,
+            conv_config=conv_config,
+            system_instruction=_build_instructions(
+                profile,
+                conv_config,
+                summary_text,
+                review_terms,
+                taught_vocab,
+            ),
+        )
+        return
 
     openai_ws = None
     last_exc = None
