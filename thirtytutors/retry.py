@@ -24,7 +24,7 @@ def is_transient_error(e: Exception) -> bool:
     The OpenAI SDK raises ServerError for 5xx responses and
     ClientError for 4xx (429 included) - checking the class name avoids a
     hard import dependency on the exact error module path, which has moved
-    before across SDK versions. ServerError is unconditionally transient;
+    before across SDK versions. ServerError/InternalServerError is unconditionally transient;
     everything else (ClientError, or any other exception type, e.g. a
     network-level error raised before a response is even parsed) falls
     through to a keyword scan of the message for the usual transient
@@ -35,6 +35,7 @@ def is_transient_error(e: Exception) -> bool:
     if type(e).__name__ in {
         "RateLimitError",
         "InternalServerError",
+        "ServerError",
         "APIConnectionError",
         "APITimeoutError",
     }:
