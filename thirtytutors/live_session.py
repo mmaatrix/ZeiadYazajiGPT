@@ -239,6 +239,7 @@ async def _configure_session(
                                 f"their native language is {native_language}. Preserve names, numbers, "
                                 "and natural learner mistakes faithfully."
                             ),
+                            "languages": ["en", "ar"],
                             "delay": "low",
                         },
                         "turn_detection": None,
