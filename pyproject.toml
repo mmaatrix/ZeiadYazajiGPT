@@ -53,6 +53,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest", "pytest-asyncio", "pytest-cov", "httpx", "httpx2", "ruff", "langfuse"]
+local = ["faster-whisper>=1.1.0"]
 # Fully opt-in - see observability.py's module docstring. Nothing else in
 # this app imports `langfuse` unconditionally, so installing without this
 # extra is completely unaffected.
