@@ -82,13 +82,16 @@ class FakeOpenAIWebSocket:
                 })
             self._response_count += 1
 
+    async def recv(self):
+        if self.closed and self._events.empty():
+            raise StopAsyncIteration
+        return json.dumps(await self._events.get())
+
     def __aiter__(self):
         return self
 
     async def __anext__(self):
-        if self.closed and self._events.empty():
-            raise StopAsyncIteration
-        return json.dumps(await self._events.get())
+        return await self.recv()
 
     async def close(self):
         self.closed = True
