@@ -119,8 +119,8 @@ def _quiz_item_schema():
     # tests using this depend on the actual language strings passed here,
     # only on _CHOICES_DESC_TEMPLATE/etc. being filled in without error.
     tool = build_quiz_tool(native_language="English", target_language="Spanish")
-    params = tool.function_declarations[0].parameters
-    return params, params.properties["items"].items
+    params = tool["parameters"]
+    return params, params["properties"]["items"]["items"]
 
 
 def test_quiz_tool_has_no_top_level_quiz_type():
@@ -128,7 +128,7 @@ def test_quiz_tool_has_no_top_level_quiz_type():
     a mixed-type quiz and redundant with the per-item item_type below - now
     computed server-side instead (see quizzes.compute_quiz_type)."""
     params, _ = _quiz_item_schema()
-    assert "quiz_type" not in params.properties
+    assert "quiz_type" not in params["properties"]
 
 
 def test_quiz_tool_item_schema_requires_every_field():
@@ -138,7 +138,7 @@ def test_quiz_tool_item_schema_requires_every_field():
     set disambiguated by item_type - so correct_answers can never be
     silently dropped from a fill_blank_dragdrop item."""
     _, item_schema = _quiz_item_schema()
-    assert set(item_schema.required) == {
+    assert set(item_schema["required"]) == {
         "target_term",
         "question",
         "item_type",
@@ -152,7 +152,7 @@ def test_quiz_tool_item_schema_requires_every_field():
 
 def test_quiz_tool_item_type_is_the_only_type_enum():
     _, item_schema = _quiz_item_schema()
-    assert set(item_schema.properties["item_type"].enum) == {"multiple_choice", "fill_blank_dragdrop"}
+    assert set(item_schema["properties"]["item_type"]["enum"]) == {"multiple_choice", "fill_blank_dragdrop"}
 
 
 # --- quizzes.compute_quiz_type / live_session._validate_quiz_items ---
