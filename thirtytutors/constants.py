@@ -19,6 +19,8 @@ DEFAULT_DIFFICULTY = "intermediate"
 DEFAULT_VOICE = "Kore"
 DEFAULT_NATIVE_LANGUAGE = "Arabic"
 DEFAULT_TARGET_LANGUAGE = "American English"
+DEFAULT_AI_PROVIDER = "local"
+DEFAULT_LOCAL_MODEL = "qwen3:8b"
 
 # Non-realtime text model used for periodic rolling-summary folding.
 # This is intentionally separate from the Realtime audio model.
@@ -393,6 +395,8 @@ PROFILE_EDITABLE_FIELDS = (
     "model_name",
     "active_conversation_id",
     "api_key",
+    "ai_provider",
+    "local_model",
     "mic_calibrations",
     "default_difficulty",
     "langfuse_public_key",
