@@ -1,8 +1,8 @@
-# ThirtyTutors
+# ZeiadYazajiGPT
 
 **An AI language tutor that talks with you, remembers you, and has a face.**
 
-![ThirtyTutors AI tutor conversation demo](https://raw.githubusercontent.com/wiss84/thirtytutors/main/thirtytutors/static/images/demo.gif)
+![ZeiadYazajiGPT AI tutor conversation demo](https://raw.githubusercontent.com/wiss84/ZeiadYazajiGPT/main/ZeiadYazajiGPT/static/images/demo.gif)
 
 Self-hosted. Open-source. Powered by Gemini Live API.
 
@@ -10,7 +10,7 @@ Self-hosted. Open-source. Powered by Gemini Live API.
 
 ## What is this?
 
-ThirtyTutors is a real-time voice conversation partner for learning a language, not a flashcard app and not a text chatbot. You hold down a key, speak, and a 3D avatar answers back out loud — in the language you're learning, correcting your mistakes, remembering what you've covered, and reacting with actual facial expressions while it talks.
+ZeiadYazajiGPT is a real-time voice conversation partner for learning a language, not a flashcard app and not a text chatbot. You hold down a key, speak, and a 3D avatar answers back out loud — in the language you're learning, correcting your mistakes, remembering what you've covered, and reacting with actual facial expressions while it talks.
 
 It runs entirely on your own machine, using your own free Gemini API key. Nothing about your conversations goes anywhere except directly to Google's Gemini Live API — there's no backend service, no account, no analytics, no middleman.
 
@@ -25,9 +25,9 @@ You hold to talk → speak → Gemini Live API (audio in, audio out) → avatar 
 
 ## Demo Videos
 
-- **0.3.0 Release** — Watch the full [ThirtyTutors UI-UX](https://youtu.be/o4WNlLXm4qo)
-- **0.2.0 Release** — Watch the full [ThirtyTutors Quiz System](https://youtu.be/9d4UrbZbwfU)
-- **0.1.0  Initial Release** — Watch the full [ThirtyTutors Tutorial](https://youtu.be/0YEskMeH4Gk)
+- **0.3.0 Release** — Watch the full [ZeiadYazajiGPT UI-UX](https://youtu.be/o4WNlLXm4qo)
+- **0.2.0 Release** — Watch the full [ZeiadYazajiGPT Quiz System](https://youtu.be/9d4UrbZbwfU)
+- **0.1.0  Initial Release** — Watch the full [ZeiadYazajiGPT Tutorial](https://youtu.be/0YEskMeH4Gk)
 
 ---
 
@@ -35,7 +35,7 @@ You hold to talk → speak → Gemini Live API (audio in, audio out) → avatar 
 
 Most "AI language tutors" tools are really just a chat window with a system prompt. That's fine for grammar explanations, but it doesn't train the thing that actually makes a language hard to speak: real-time listening and speaking under mild pressure, and actually correcting you as you go.
 
-ThirtyTutors is built around the Gemini **Live API** specifically because it's full-duplex audio — you talk, it listens and replies, in real time, the same shape as an actual conversation. On top of that:
+ZeiadYazajiGPT is built around the Gemini **Live API** specifically because it's full-duplex audio — you talk, it listens and replies, in real time, the same shape as an actual conversation. On top of that:
 
 - **It corrects you, every time.** The tutor is instructed not to let mistakes slide — wrong grammar, vocabulary, or pronunciation gets caught, explained in your native language, and drilled until you get it right.
 - **It has a face.** A 3D avatar lip-syncs to the reply and reacts with mood-appropriate expressions (encouraging, sympathetic, proud) — driven silently by the model itself, not a canned animation loop.
@@ -47,19 +47,19 @@ ThirtyTutors is built around the Gemini **Live API** specifically because it's f
 ## Screenshots
 
 ### Create a new profile
-![Create Profile](https://raw.githubusercontent.com/wiss84/thirtytutors/main/thirtytutors/static/images/home.webp)
+![Create Profile](https://raw.githubusercontent.com/wiss84/ZeiadYazajiGPT/main/ZeiadYazajiGPT/static/images/home.webp)
 
 ### Login to existing profile
-![Profile Page](https://raw.githubusercontent.com/wiss84/thirtytutors/main/thirtytutors/static/images/Create_profile.webp)
+![Profile Page](https://raw.githubusercontent.com/wiss84/ZeiadYazajiGPT/main/ZeiadYazajiGPT/static/images/Create_profile.webp)
 
 ### Avatar & voice selection
-![Profile Page](https://raw.githubusercontent.com/wiss84/thirtytutors/main/thirtytutors/static/images/Existing_profile.webp)
+![Profile Page](https://raw.githubusercontent.com/wiss84/ZeiadYazajiGPT/main/ZeiadYazajiGPT/static/images/Existing_profile.webp)
 
 ### Learning Session Page
-![Profile Page](https://raw.githubusercontent.com/wiss84/thirtytutors/main/thirtytutors/static/images/Pick_Tutor.webp)
+![Profile Page](https://raw.githubusercontent.com/wiss84/ZeiadYazajiGPT/main/ZeiadYazajiGPT/static/images/Pick_Tutor.webp)
 
 ### Learning Session (Full Screen) Page
-![Profile Page](https://raw.githubusercontent.com/wiss84/thirtytutors/main/thirtytutors/static/images/Session.webp)
+![Profile Page](https://raw.githubusercontent.com/wiss84/ZeiadYazajiGPT/main/ZeiadYazajiGPT/static/images/Session.webp)
 
 ---
 
@@ -78,7 +78,7 @@ ThirtyTutors is built around the Gemini **Live API** specifically because it's f
 - **Home page & profile switching** — the app opens on a real home page every launch (your last-active profile stays logged in automatically), with a permanent profile-switcher icon and a profile menu for Settings/switching from anywhere
 - **Roleplay scenarios** — free conversation, ordering at a café, checking in at an airport, asking for directions, and more
 - **Three difficulty levels** — beginner, intermediate, advanced, adjustable per conversation
-- **Automatic model fallback** — if one Gemini model is unavailable, ThirtyTutors transparently retries on a second one
+- **Automatic model fallback** — if one Gemini model is unavailable, ZeiadYazajiGPT transparently retries on a second one
 - **Export your notes** — print or export a conversation's vocabulary/mistake log to Word
 - **Built-in update notifications** — a bell in the top bar lets you know when a new app version or a refreshed avatar/voice library is available, with a one-click update-and-relaunch
 - **100% self-hosted** — your own API key, your data stays on your machine, no cloud service in between (Except for Google, but you can opt-out via Account's Gemini Apps Activity page).
@@ -98,28 +98,28 @@ ThirtyTutors is built around the Gemini **Live API** specifically because it's f
 
 A virtual environment is recommended, same as any Python package:
 ```bash
-conda create -n thirtytutors python=3.11 -y
-conda activate thirtytutors
-pip install thirtytutors
-thirtytutors setup          # install extras + download assets + create shortcut, without launching
+conda create -n ZeiadYazajiGPT python=3.11 -y
+conda activate ZeiadYazajiGPT
+pip install ZeiadYazajiGPT
+ZeiadYazajiGPT setup          # install extras + download assets + create shortcut, without launching
 ```
 
-That's it. The first run does a one-time setup automatically: installs the two extra packages hands-free mode needs, downloads the avatar/voice/photo assets (~372MB) and the landing page's video/gif assets (~84MB) — 455MB total, so this part takes a couple of minutes — and creates a desktop shortcut for you — then opens the app. Every run after that just opens the app straight away, no repeated setup, whether you launch it via `thirtytutors` again or the new desktop shortcut.
+That's it. The first run does a one-time setup automatically: installs the two extra packages hands-free mode needs, downloads the avatar/voice/photo assets (~372MB) and the landing page's video/gif assets (~84MB) — 455MB total, so this part takes a couple of minutes — and creates a desktop shortcut for you — then opens the app. Every run after that just opens the app straight away, no repeated setup, whether you launch it via `ZeiadYazajiGPT` again or the new desktop shortcut.
 
 No `.env` file or API key setup needed - you'll paste your own free Gemini API key directly into the app the first time you create a profile.
 
 Want more control over the one-time setup, or need to re-run it (e.g. after a broken install)?
 
 ```bash
-thirtytutors setup --force  # same, but re-downloads assets even if already up to date
-thirtytutors --host 0.0.0.0 --port 8080   # override the default 127.0.0.1:8000
+ZeiadYazajiGPT setup --force  # same, but re-downloads assets even if already up to date
+ZeiadYazajiGPT --host 0.0.0.0 --port 8080   # override the default 127.0.0.1:8000
 ```
 
 ## Run it
 
-After the first-run setup, just use the desktop shortcut it created, or run `thirtytutors` again from a terminal.
+After the first-run setup, just use the desktop shortcut it created, or run `ZeiadYazajiGPT` again from a terminal.
 
-Prefer a browser tab over the desktop window? `thirtytutors` always opens as a native app window - if you'd rather run it as a plain local web server instead, clone the repo and run `uvicorn thirtytutors.main:app --reload --port 8000` against a source checkout (see Contributing below), then open `http://127.0.0.1:8000/`.
+Prefer a browser tab over the desktop window? `ZeiadYazajiGPT` always opens as a native app window - if you'd rather run it as a plain local web server instead, clone the repo and run `uvicorn ZeiadYazajiGPT.main:app --reload --port 8000` against a source checkout (see Contributing below), then open `http://127.0.0.1:8000/`.
 
 ---
 
@@ -128,7 +128,7 @@ Prefer a browser tab over the desktop window? `thirtytutors` always opens as a n
 1. **Profiles** hold your identity, mic preference, and API key. One machine can have several profiles.
 2. **Conversations** live under a profile — each one is a language + voice + difficulty + scenario combination, with its own memory. Switch between them freely; only one is ever live at a time.
 3. Every conversation turn is transcribed by Gemini itself and saved locally. Periodically (and on disconnect), a background pass folds recent turns into a short rolling summary and pulls out notable vocabulary or recurring mistakes.
-4. When a session reconnects — hitting a session time limit, or reopening the app — ThirtyTutors tries to resume the exact same Gemini session first. If that's not possible, it starts a fresh one and quietly re-seeds it with the rolling summary, so the tutor doesn't act like it's meeting you for the first time.
+4. When a session reconnects — hitting a session time limit, or reopening the app — ZeiadYazajiGPT tries to resume the exact same Gemini session first. If that's not possible, it starts a fresh one and quietly re-seeds it with the rolling summary, so the tutor doesn't act like it's meeting you for the first time.
 5. **Hands-free mode** enrolls a short voice sample per profile, then filters incoming audio through a speaker-verification pass before anything reaches Gemini — so it only responds to you, not a TV in the background or someone else talking.
 6. **Quizzes** can be triggered by the tutor at natural points in the conversation — multiple choice or drag-and-drop word bank, right in a side drawer without losing your place. Anything you get wrong feeds into a per-profile mistakes log, so those words are more likely to come back around in a future quiz.
 
@@ -136,13 +136,13 @@ Prefer a browser tab over the desktop window? `thirtytutors` always opens as a n
 
 ## Limitations
 
-- **The displayed transcript of what you said is sometimes wrong, even when the tutor's reply isn't.** Gemini Live API produces the on-screen transcript of your speech through a separate speech-to-text pass from the one the model actually listens with — so the tutor often responds correctly to what you actually said while the text shown for it is garbled, off-topic, or barely related. This is a Gemini Live API characteristic, not something ThirtyTutors's own audio pipeline can control or fix.
+- **The displayed transcript of what you said is sometimes wrong, even when the tutor's reply isn't.** Gemini Live API produces the on-screen transcript of your speech through a separate speech-to-text pass from the one the model actually listens with — so the tutor often responds correctly to what you actually said while the text shown for it is garbled, off-topic, or barely related. This is a Gemini Live API characteristic, not something ZeiadYazajiGPT's own audio pipeline can control or fix.
 
 ---
 
 ## Staying up to date
 
-ThirtyTutors checks for updates automatically when it opens, and periodically while it's running - both a new app version and a refreshed avatar/voice/photo library. When one's available, a bell icon in the top bar shows it; click it, then the notification, for details and a one-click **Update & Relaunch**. You can also check manually any time from the profile menu, or from Settings → Updates.
+ZeiadYazajiGPT checks for updates automatically when it opens, and periodically while it's running - both a new app version and a refreshed avatar/voice/photo library. When one's available, a bell icon in the top bar shows it; click it, then the notification, for details and a one-click **Update & Relaunch**. You can also check manually any time from the profile menu, or from Settings → Updates.
 
 ---
 
@@ -158,20 +158,20 @@ Avatar `.glb` models, voice `.wav` samples, and tile `.webp` photos are download
 Issues and pull requests are welcome. For local development:
 
 ```bash
-git clone https://github.com/wiss84/thirtytutors.git
-cd thirtytutors
-conda create -n thirtytutors python=3.11 -y
-conda activate thirtytutors
+git clone https://github.com/wiss84/ZeiadYazajiGPT.git
+cd ZeiadYazajiGPT
+conda create -n ZeiadYazajiGPT python=3.11 -y
+conda activate ZeiadYazajiGPT
 pip install -e ".[dev]"
-thirtytutors setup   # one-time: extra deps + assets + shortcut
+ZeiadYazajiGPT setup   # one-time: extra deps + assets + shortcut
 ```
 
-`pip install -e .` means the `thirtytutors` command runs directly against your live source tree - no separate build/reinstall step needed while iterating.
+`pip install -e .` means the `ZeiadYazajiGPT` command runs directly against your live source tree - no separate build/reinstall step needed while iterating.
 
 There isn't a formal contribution guide yet, so when in doubt, keep changes focused, run `pytest` before opening a PR, and describe what you tested manually for anything touching the frontend or the Live API relay (some of it - real-time audio, the actual avatar rendering - isn't practical to cover with automated tests).
 
 ```bash
-cd thirtytutors
+cd ZeiadYazajiGPT
 pytest tests/ -v --cov --cov-report=term-missing
 ruff check .
 ruff check . --fix # Fix any issues found before a PR
