@@ -8,6 +8,7 @@ real API key or network connection is used.
 import asyncio
 import base64
 import json
+import time
 
 import pytest
 from fastapi import FastAPI
@@ -21,7 +22,7 @@ pytestmark = pytest.mark.integration
 class FakeOpenAIWebSocket:
     """Small event-driven stand-in for the OpenAI Realtime WebSocket."""
 
-    def __init__(self, *, tool_mode=False):
+    def __init__(self, *, tool_mode=False, hold_response=False):
         self.sent = []
         self.closed = False
         self._events = asyncio.Queue()
@@ -31,6 +32,7 @@ class FakeOpenAIWebSocket:
         })
         self._response_count = 0
         self._tool_mode = tool_mode
+        self._hold_response = hold_response
         self._queue_task = None
 
     async def send(self, payload):
@@ -50,7 +52,12 @@ class FakeOpenAIWebSocket:
                 "transcript": "Hello, I am ready to practice.",
             })
         elif event_type == "response.create":
-            if self._tool_mode and self._response_count == 0:
+            if self._hold_response:
+                await self._events.put({
+                    "type": "response.created",
+                    "response": {"id": f"resp-{self._response_count}", "status": "in_progress"},
+                })
+            elif self._tool_mode and self._response_count == 0:
                 await self._events.put({
                     "type": "response.done",
                     "response": {
@@ -169,6 +176,40 @@ def test_normal_turn_flow_routes_audio_and_persists_transcript(
     assert session["output_modalities"] == ["audio"]
     assert session["audio"]["input"]["format"] == {"type": "audio/pcm", "rate": 24000}
     assert session["audio"]["output"]["format"] == {"type": "audio/pcm", "rate": 24000}
+
+
+def test_barge_in_cancels_only_an_active_response(
+    ws_app, make_profile, make_conversation
+):
+    profile = make_profile(api_key="fake-key")
+    conv = make_conversation(profile["id"], target_language="American English")
+    fake_ws = FakeOpenAIWebSocket(hold_response=True)
+    client = ws_app(fake_ws)
+
+    with client.websocket_connect("/ws/session") as ws:
+        ws.send_json(_init_message(profile, conv))
+        assert ws.receive_json()["type"] == "session_status"
+
+        # Starting while idle must not send response.cancel.
+        ws.send_json({"type": "start_turn"})
+        ws.send_json({
+            "type": "audio_chunk",
+            "data": base64.b64encode(b"\x00\x01" * 80).decode("ascii"),
+        })
+        ws.send_json({"type": "turn_complete"})
+        assert ws.receive_json()["type"] == "transcript_in"
+
+        # The fake has now emitted response.created. Give the relay a moment
+        # to observe it, then start talking over the still-active tutor.
+        time.sleep(0.05)
+        ws.send_json({"type": "start_turn"})
+        time.sleep(0.05)
+        ws.send_json({"type": "close"})
+
+    event_types = [event["type"] for event in fake_ws.sent]
+    assert event_types.count("response.cancel") == 1
+    first_start_clear = event_types.index("input_audio_buffer.clear")
+    assert "response.cancel" not in event_types[:first_start_clear]
 
 
 def test_openai_function_call_is_executed_and_followed_by_response(
