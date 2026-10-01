@@ -41,9 +41,6 @@ jobs:
               updated = text.replace(OLD, NEW)
               if updated != text:
                   path.write_text(updated, encoding="utf-8", newline="")
-
-          if WORKFLOW.exists():
-              WORKFLOW.unlink()
           PY
 
           if grep -RIn --exclude=LICENSE --exclude-dir=.git "wiss84/ZeiadYazajiGPT" .; then
