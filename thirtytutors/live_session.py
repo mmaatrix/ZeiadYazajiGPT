@@ -279,11 +279,22 @@ async def _inject_text(openai_ws, text: str) -> None:
 def _error_payload(exc: Exception) -> dict:
     raw = str(exc)
     upper = raw.upper()
+    if "INVALID_API_KEY" in upper or "INVALID API KEY" in upper or "401" in upper:
+        return {
+            "type": "error",
+            "kind": "invalid_api_key",
+            "message": (
+                "The OpenAI API key saved in this profile was rejected. "
+                "Open your profile Settings and replace it with a current OpenAI API key "
+                "from https://platform.openai.com/api-keys. "
+                "A ChatGPT Plus/Pro subscription is separate from API billing and does not itself provide an API key."
+            ),
+        }
     if "429" in upper or "RATE_LIMIT" in upper or "QUOTA" in upper:
         return {
             "type": "error",
             "kind": "rate_limit",
-            "message": "OpenAI rate limit or API quota was reached. Please try again shortly.",
+            "message": "OpenAI rate limit or API quota was reached. Please check your API billing/limits.",
         }
     if isinstance(exc, OSError) or "DNS" in upper or "CONNECT" in upper:
         return {
