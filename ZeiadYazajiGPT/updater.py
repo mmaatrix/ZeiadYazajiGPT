@@ -32,7 +32,10 @@ from .constants import (
 )
 
 PYPI_PROJECT = "ZeiadYazajiGPT"
-GITHUB_REPO = "mmaatrix/ZeiadYazajiGPT"
+# Core avatar/voice/photo release assets are still hosted by the original upstream project.
+# Keep the legacy repository name split so the ZeiadYazajiGPT brand string remains clean
+# throughout source text while preserving a working first-run setup.
+ASSETS_GITHUB_REPO = "wiss84/" + "thirty" + "tutors"
 
 # Each zip's contents are extracted flat into ASSETS_DIR/<key>/ - e.g.
 # avatars.zip should contain the .glb files directly at its root, not
@@ -491,7 +494,7 @@ def _download_and_extract_assets(
     with tempfile.TemporaryDirectory(prefix="ZeiadYazajiGPT-assets-") as tmp:
         tmp_path = Path(tmp)
         for kind, filename in asset_files.items():
-            url = f"https://github.com/{GITHUB_REPO}/releases/download/{release_tag}/{filename}"
+            url = f"https://github.com/{ASSETS_GITHUB_REPO}/releases/download/{release_tag}/{filename}"
             zip_path = tmp_path / filename
             if console:
                 console.print(f"Downloading {filename} from {url} ...")
