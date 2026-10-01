@@ -308,7 +308,7 @@ def _print_app_update_notice(console) -> None:
         return
     if info.get("update_available"):
         console.print(
-            f"[yellow]A newer ThirtyTutors is available: v{info['current']} \u2192 v{info['latest']}.[/yellow] "
+            f"[yellow]A newer Zeiad English Coach version is available: v{info['current']} \u2192 v{info['latest']}.[/yellow] "
             "Run 'pip install --upgrade thirtytutors' to update, or use the update notification in the app itself."
         )
 
