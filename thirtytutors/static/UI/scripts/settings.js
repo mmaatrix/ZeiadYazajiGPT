@@ -1,4 +1,4 @@
-// Zeiad English Coach - Settings modal (General/Account/Voice/Learning/Stats/Data
+// ThirtyTutors - Settings modal (General/Account/Voice/Learning/Stats/Data
 // controls/Updates/About panes) - now loaded globally (index.html), not
 // just on the learning page, since the profile-menu button that opens it
 // (see profileMenu.js) is itself global.
@@ -37,9 +37,6 @@ const settingsSaveGeneralBtn = document.getElementById('settingsSaveGeneralBtn')
 attachLanguageAutocomplete(settingsNativeLanguageInput);
 
 // Account
-const settingsAiProviderSelect = document.getElementById('settingsAiProviderSelect');
-const settingsAiProviderStatus = document.getElementById('settingsAiProviderStatus');
-const settingsOpenAiGroup = document.getElementById('settingsOpenAiGroup');
 const settingsApiKeyInput = document.getElementById('settingsApiKeyInput');
 const settingsToggleApiKeyBtn = document.getElementById('settingsToggleApiKeyBtn');
 const settingsSaveApiKeyBtn = document.getElementById('settingsSaveApiKeyBtn');
@@ -192,17 +189,7 @@ settingsThemeToggle.querySelectorAll('.theme-option').forEach((btn) => {
 
 // --- Account ---
 
-function refreshAiProviderUi() {
-  const provider = settingsAiProviderSelect.value || 'local';
-  settingsOpenAiGroup.hidden = provider !== 'openai';
-  settingsAiProviderStatus.textContent = provider === 'local'
-    ? 'Local Free uses Ollama + Qwen3 8B on this PC. No OpenAI API balance is required.'
-    : 'OpenAI Realtime uses your API key and separate API billing.';
-}
-
 function populateAccountPane() {
-  settingsAiProviderSelect.value = currentProfile.ai_provider || 'local';
-  refreshAiProviderUi();
   settingsApiKeyInput.value = currentProfile.api_key || '';
   settingsApiKeyInput.type = 'password';
   settingsToggleApiKeyBtn.textContent = '\ud83d\udc41\ufe0f';
@@ -218,25 +205,6 @@ function populateAccountPane() {
   settingsLangfuseStatus.textContent = '';
 }
 
-settingsAiProviderSelect.addEventListener('change', async () => {
-  const ai_provider = settingsAiProviderSelect.value;
-  refreshAiProviderUi();
-  settingsAiProviderStatus.textContent = 'Saving...';
-  try {
-    const res = await fetch(`/api/profiles/${currentProfile.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ai_provider }),
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    currentProfile.ai_provider = ai_provider;
-    refreshAiProviderUi();
-    settingsAiProviderStatus.textContent += ' Takes effect on the next connection.';
-  } catch (e) {
-    settingsAiProviderStatus.textContent = 'Could not save AI engine.';
-  }
-});
-
 settingsToggleApiKeyBtn.addEventListener('click', () => {
   const showing = settingsApiKeyInput.type === 'text';
   settingsApiKeyInput.type = showing ? 'password' : 'text';
@@ -245,20 +213,17 @@ settingsToggleApiKeyBtn.addEventListener('click', () => {
 
 settingsSaveApiKeyBtn.addEventListener('click', async () => {
   const value = settingsApiKeyInput.value.trim();
-  if (!value && settingsAiProviderSelect.value === 'openai') {
-    settingsApiKeyStatus.textContent = 'OpenAI Realtime requires an API key.';
-    return;
-  }
+  if (!value) { settingsApiKeyStatus.textContent = 'API key cannot be empty.'; return; }
   settingsSaveApiKeyBtn.disabled = true;
   settingsApiKeyStatus.textContent = 'Saving...';
   try {
     await fetch(`/api/profiles/${currentProfile.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ api_key: value || null }),
+      body: JSON.stringify({ api_key: value }),
     });
-    currentProfile.api_key = value || null;
-    settingsApiKeyStatus.textContent = value ? 'Saved - takes effect on your next connect.' : 'API key cleared.';
+    currentProfile.api_key = value;
+    settingsApiKeyStatus.textContent = 'Saved - takes effect on your next connect.';
   } catch (e) {
     settingsApiKeyStatus.textContent = 'Could not save - check your connection.';
   } finally {
@@ -737,7 +702,7 @@ settingsExportProfileBtn.addEventListener('click', async () => {
     a.href = url;
     const disposition = res.headers.get('Content-Disposition');
     const filenameMatch = disposition && disposition.match(/filename="?([^"]+)"?/);
-    a.download = filenameMatch ? filenameMatch[1] : 'Zeiad English Coach-backup.zip';
+    a.download = filenameMatch ? filenameMatch[1] : 'ThirtyTutors-backup.zip';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -774,7 +739,7 @@ settingsImportProfileFile.addEventListener('change', async () => {
     // it should silently become the active one.
     setTimeout(() => { window.location.href = '/profiles'; }, 1200);
   } catch (e) {
-    settingsBackupStatus.textContent = "Could not import that file - make sure it's a Zeiad English Coach backup zip.";
+    settingsBackupStatus.textContent = "Could not import that file - make sure it's a ThirtyTutors backup zip.";
     settingsImportProfileBtn.disabled = false;
   }
 });
@@ -834,12 +799,12 @@ async function loadAboutPane() {
     appInfoCache = await res.json();
     renderAboutPane(appInfoCache);
   } catch (e) {
-    settingsVersionText.textContent = 'Zeiad English Coach';
+    settingsVersionText.textContent = 'ThirtyTutors';
   }
 }
 
 function renderAboutPane(info) {
-  settingsVersionText.textContent = `Zeiad English Coach v${info.version}`;
+  settingsVersionText.textContent = `ThirtyTutors v${info.version}`;
   settingsCreditsText.textContent = info.credits && info.credits.length
     ? `Built with ${info.credits.join(', ')}.`
     : '';

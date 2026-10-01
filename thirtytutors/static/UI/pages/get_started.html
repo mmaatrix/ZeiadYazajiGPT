@@ -1,10 +1,10 @@
 {% extends "index.html" %}
 
 {% block topbar_left_extra %}
-<span class="app-name-text">Zeiad English Coach</span>
+<span class="app-name-text">ThirtyTutors</span>
 {% endblock %}
 
-{% block title %}Get started - Zeiad English Coach{% endblock %}
+{% block title %}Get started - ThirtyTutors AI{% endblock %}
 
 {% block styles %}
 <link rel="stylesheet" href="/UI/styles/sidebar.css?v=1" />
@@ -15,7 +15,7 @@
 {% block content %}
 <div id="landingWrap">
   <div id="landingCard">
-    <h1 id="landingTitle">Zeiad English Coach</h1>
+    <h1 id="landingTitle">ThirtyTutors AI</h1>
     <p id="landingSubtitle">A few things about you and your tutor, then we'll pick your avatar.</p>
 
     <div id="landingForm">
@@ -25,26 +25,17 @@
       <label class="field-label" for="nativeLanguageInput">Type your native language</label>
       <input id="nativeLanguageInput" type="text" class="text-input" autocomplete="off" />
 
-      <label class="field-label" for="aiProviderSelect">AI engine</label>
-      <select id="aiProviderSelect">
-        <option value="local" selected>Local Free - Ollama / Qwen3 8B (no API charges)</option>
-        <option value="openai">OpenAI Realtime API</option>
-      </select>
-      <p class="field-hint" id="localAiHint">Recommended for this PC: Qwen3 8B runs locally through Ollama. No OpenAI API balance is required.</p>
-
-      <div id="openAiSetupFields" hidden>
-        <label class="field-label" for="apiKeyInput">OpenAI API key</label>
-        <button id="watchApiKeyTutorialBtn" class="pill-btn api-key-tutorial-btn" type="button">▶ Watch a fast tutorial on how to get an OpenAI API key</button>
-        <div class="field-row">
-          <input id="apiKeyInput" type="password" class="text-input" placeholder="Paste your OpenAI API key" autocomplete="off" />
-          <button id="toggleApiKeyBtn" class="icon-btn" type="button" title="Show/hide API key">👁️</button>
-        </div>
-        <p class="field-hint">Only needed for OpenAI Realtime. API billing is separate from ChatGPT Plus.</p>
-
-        <label class="field-label" for="modelSelect">OpenAI model</label>
-        <select id="modelSelect"></select>
-        <p class="field-hint" id="modelHint"></p>
+      <label class="field-label" for="apiKeyInput">Gemini API key</label>
+      <button id="watchApiKeyTutorialBtn" class="pill-btn api-key-tutorial-btn" type="button">▶ Watch a fast tutorial on how to get a free API key</button>
+      <div class="field-row">
+        <input id="apiKeyInput" type="password" class="text-input" placeholder="Paste your Gemini API key" autocomplete="off" />
+        <button id="toggleApiKeyBtn" class="icon-btn" type="button" title="Show/hide API key">👁️</button>
       </div>
+      <p class="field-hint">To get a free API key, click the <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> link, sign up, then click 'Create API key', copy the key and paste it above.</p>
+
+      <label class="field-label" for="modelSelect">Model</label>
+      <select id="modelSelect"></select>
+      <p class="field-hint" id="modelHint"></p>
 
       <div class="sidebar-section" style="margin-top: 20px;">
         <h3>Microphone</h3>
@@ -64,7 +55,7 @@
 
 <div id="apiKeyTutorialOverlay">
   <div id="apiKeyTutorialModal">
-    <h2>How to get a OpenAI API key</h2>
+    <h2>How to get a free Gemini API key</h2>
     <video id="apiKeyTutorialVideo" src="/Get_API_Key.mp4" controls playsinline></video>
     <button id="closeApiKeyTutorialBtn" class="pill-btn" type="button" style="width:100%; margin-top:14px;">Close</button>
   </div>

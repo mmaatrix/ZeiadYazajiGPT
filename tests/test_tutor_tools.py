@@ -30,7 +30,7 @@ def test_build_quiz_tool_does_not_raise_for_various_languages():
 
 def test_build_quiz_tool_item_schema_has_every_required_field():
     tool = build_quiz_tool(native_language="English", target_language="Spanish")
-    item_schema = tool["parameters"]["properties"]["items"]["items"]
+    item_schema = tool.function_declarations[0].parameters.properties["items"].items
     expected_fields = {
         "target_term",
         "question",
@@ -41,8 +41,8 @@ def test_build_quiz_tool_item_schema_has_every_required_field():
         "correct_answers",
         "word_bank",
     }
-    assert set(item_schema["properties"].keys()) == expected_fields
-    assert set(item_schema["required"]) == expected_fields
+    assert set(item_schema.properties.keys()) == expected_fields
+    assert set(item_schema.required) == expected_fields
 
 
 def test_build_quiz_tool_interpolates_the_given_languages():
@@ -52,8 +52,8 @@ def test_build_quiz_tool_interpolates_the_given_languages():
     # .format() call silently broke) - not an assertion about the
     # instructional wording itself.
     tool = build_quiz_tool(native_language="Polish", target_language="Japanese")
-    item_props = tool["parameters"]["properties"]["items"]["items"]["properties"]
-    assert "Polish" in item_props["question"]["description"]
-    assert "{native_language}" not in item_props["question"]["description"]
-    assert "Japanese" in item_props["choices"]["description"]
-    assert "{target_language}" not in item_props["choices"]["description"]
+    item_props = tool.function_declarations[0].parameters.properties["items"].items.properties
+    assert "Polish" in item_props["question"].description
+    assert "{native_language}" not in item_props["question"].description
+    assert "Japanese" in item_props["choices"].description
+    assert "{target_language}" not in item_props["choices"].description

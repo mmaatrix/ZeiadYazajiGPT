@@ -48,24 +48,15 @@
       <div class="settings-pane" data-pane="account" hidden>
         <h3>Account</h3>
 
-        <label class="field-label" for="settingsAiProviderSelect">AI engine</label>
-        <select id="settingsAiProviderSelect">
-          <option value="local">Local Free - Ollama / Qwen3 8B (no API charges)</option>
-          <option value="openai">OpenAI Realtime API</option>
-        </select>
-        <p class="field-hint" id="settingsAiProviderStatus">Local Free runs the tutor on this PC. OpenAI is optional.</p>
-
-        <div id="settingsOpenAiGroup">
-          <label class="field-label" for="settingsApiKeyInput" style="margin-top:14px;">OpenAI API key (optional)</label>
-          <div class="field-row">
-            <input id="settingsApiKeyInput" type="password" class="text-input" autocomplete="off" />
-            <button id="settingsToggleApiKeyBtn" class="icon-btn" type="button" title="Show/hide API key">&#128065;&#65039;</button>
-          </div>
-          <p class="field-hint">Only needed when AI engine is OpenAI Realtime. From <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">OpenAI API dashboard</a>.</p>
-
-          <button id="settingsSaveApiKeyBtn" class="primary-btn" type="button" style="margin-top:10px;">Save / clear key</button>
-          <p class="field-hint" id="settingsApiKeyStatus"></p>
+        <label class="field-label" for="settingsApiKeyInput">Gemini API key</label>
+        <div class="field-row">
+          <input id="settingsApiKeyInput" type="password" class="text-input" autocomplete="off" />
+          <button id="settingsToggleApiKeyBtn" class="icon-btn" type="button" title="Show/hide API key">&#128065;&#65039;</button>
         </div>
+        <p class="field-hint">Free from <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>. Stored on this profile only.</p>
+
+        <button id="settingsSaveApiKeyBtn" class="primary-btn" type="button" style="margin-top:10px;">Save key</button>
+        <p class="field-hint" id="settingsApiKeyStatus"></p>
 
         <hr class="modal-divider" style="margin-top:18px; margin-bottom:18px;">
 
@@ -180,7 +171,7 @@
           </select>
           <button id="settingsOpenBackupsFolderBtn" class="pill-btn" type="button">Open backups folder</button>
         </div>
-        <p class="field-hint">Checked once per app launch, not on a precise schedule - if the app isn't opened exactly on time, a backup can run up to one extra interval late. Written locally under Zeiad English Coach's data folder, not uploaded anywhere.</p>
+        <p class="field-hint">Checked once per app launch, not on a precise schedule - if the app isn't opened exactly on time, a backup can run up to one extra interval late. Written locally under ThirtyTutors's data folder, not uploaded anywhere.</p>
 
         <hr class="modal-divider" />
 
@@ -195,7 +186,7 @@
         <h3>Updates</h3>
 
         <div class="update-status-row">
-          <span class="field-label" style="margin:0;">Zeiad English Coach app</span>
+          <span class="field-label" style="margin:0;">ThirtyTutors app</span>
           <span id="settingsAppVersionText" class="field-hint" style="margin:0;">Checking...</span>
         </div>
         <div class="update-status-row">
@@ -217,18 +208,18 @@
       <div class="settings-pane" data-pane="about" hidden>
         <h3>About</h3>
 
-        <p class="field-hint" id="settingsVersionText">Zeiad English Coach</p>
+        <p class="field-hint" id="settingsVersionText">ThirtyTutors</p>
         <div class="field-row">
-          <a id="settingsGithubBtn" class="pill-btn" href="https://github.com/mmaatrix/ZeiadYazajiGPT" target="_blank" rel="noopener" style="display:inline-block; text-decoration:none; text-align:center;">&#11088; Star on GitHub</a>
-          <a id="settingsReportIssueBtn" class="pill-btn" href="https://github.com/mmaatrix/ZeiadYazajiGPT/issues" target="_blank" rel="noopener" style="display:inline-block; text-decoration:none; text-align:center;">Report an issue</a>
+          <a id="settingsGithubBtn" class="pill-btn" href="https://github.com/wiss84/thirtytutors" target="_blank" rel="noopener" style="display:inline-block; text-decoration:none; text-align:center;">&#11088; Star on GitHub</a>
+          <a id="settingsReportIssueBtn" class="pill-btn" href="https://github.com/wiss84/thirtytutors/issues" target="_blank" rel="noopener" style="display:inline-block; text-decoration:none; text-align:center;">Report an issue</a>
         </div>
+        <a id="settingsStoreReviewBtn" class="pill-btn" href="ms-windows-store://review/?ProductId=9NQ1L54QP6PT" style="display:block; text-decoration:none; text-align:center; margin-top:10px;">&#11088; Rate us on the Microsoft Store</a>
         <a id="settingsReleaseNotesBtn" class="pill-btn" href="/whats-new" style="display:block; text-decoration:none; text-align:center; margin-top:10px;">Release notes</a>
         <p class="field-hint" id="settingsCreditsText" style="margin-top:14px;"></p>
 
-        <label class="field-label" style="margin-top:16px;">Developer / Maintainer</label>
-        <p class="field-hint"><strong>Zeiad Yazaji</strong></p>
-        <p class="field-hint">GitHub: <a href="https://github.com/mmaatrix" target="_blank" rel="noopener">@mmaatrix</a></p>
-        <p class="field-hint">This build is derived from ThirtyTutors. The upstream copyright notice is preserved in LICENSE as required.</p>
+        <label class="field-label" style="margin-top:16px;">Contact</label>
+        <p class="field-hint">Email: <a href="mailto:wissammetawee84@outlook.com">wissammetawee84@outlook.com</a></p>
+        <p class="field-hint">LinkedIn: <a href="https://www.linkedin.com/in/wissam-metawee-02bb50251/" target="_blank" rel="noopener">wissam-metawee</a></p>
       </div>
 
       <button id="closeSettingsBtn" type="button" style="margin-top: auto; align-self: flex-end;">Close</button>

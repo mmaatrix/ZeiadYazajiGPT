@@ -1,4 +1,4 @@
-"""Profile JSON storage (data/profiles.json) + the OpenAI client factory
+"""Profile JSON storage (data/profiles.json) + the Gemini client factory
 built from a profile's own API key. Split out of main.py so route modules
 and live_session.py can share this without importing each other.
 """
@@ -7,7 +7,7 @@ import json
 import os
 import shutil
 
-from openai import OpenAI
+from google import genai
 
 from . import memory
 from .constants import DATA_DIR, DEFAULT_MODEL, MODEL_OPTIONS, PROFILES_FILE
@@ -186,7 +186,7 @@ def migrate_legacy_profile_state() -> None:
 def migrate_legacy_model_name() -> None:
     """One-time-per-stale-value migration: updates any conversation whose
     stored config still references a model that's no longer in
-    MODEL_OPTIONS (e.g. retired provider model, removed
+    MODEL_OPTIONS (e.g. gemini-2.5-flash-native-audio-latest, removed
     after most of the duplicate/repeated-response issues logged in
     design_plans/issues.md turned out to happen on it specifically) to the
     current DEFAULT_MODEL instead. Called once at every app startup (see
@@ -218,9 +218,14 @@ def migrate_legacy_model_name() -> None:
             print(f"[profiles_store] migrated conversation={conv['id']!r} off retired model {model_name!r} to {DEFAULT_MODEL!r}")
 
 
-def get_client_for_key(api_key: str | None) -> OpenAI:
-    """Build an OpenAI client from the profile's own API key."""
+def get_client_for_key(api_key: str | None) -> genai.Client:
+    """Builds a Gemini client from a profile's own API key. Each profile
+    carries its own key (see constants.PROFILE_EDITABLE_FIELDS) - there's
+    no shared or .env fallback, so a profile without one simply can't open
+    a session or run summarization; callers should catch ValueError and
+    surface it.
+    """
     api_key = (api_key or "").strip()
     if not api_key:
-        raise ValueError("No OpenAI API key is set for this profile.")
-    return OpenAI(api_key=api_key)
+        raise ValueError("No Gemini API key is set for this profile.")
+    return genai.Client(api_key=api_key)

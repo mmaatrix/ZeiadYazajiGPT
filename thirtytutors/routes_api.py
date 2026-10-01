@@ -24,9 +24,7 @@ from .constants import (
     APP_VERSION,
     ASSETS_DIR,
     DATA_DIR,
-    DEFAULT_AI_PROVIDER,
     DEFAULT_DIFFICULTY,
-    DEFAULT_LOCAL_MODEL,
     DEFAULT_MIC_CALIBRATION_KEY,
     DEFAULT_MODEL,
     DEFAULT_NATIVE_LANGUAGE,
@@ -101,10 +99,7 @@ def get_app_info():
         version = APP_VERSION
     return {
         "version": version,
-        "product": "Zeiad English Coach",
-        "developer": "Zeiad Yazaji",
-        "github": "https://github.com/mmaatrix",
-        "credits": ["Ollama / Qwen3 local AI", "faster-whisper local speech recognition", "OpenAI Realtime (optional)", "Resemblyzer", "TalkingHead", "ThirtyTutors upstream"],
+        "credits": ["Gemini Live API", "Resemblyzer", "TalkingHead"],
     }
 
 
@@ -356,8 +351,6 @@ async def create_profile(request: Request):
         "id": str(uuid.uuid4()),
         "name": name,
         "api_key": api_key,
-        "ai_provider": payload.get("ai_provider") if payload.get("ai_provider") in {"local", "openai"} else DEFAULT_AI_PROVIDER,
-        "local_model": (payload.get("local_model") or DEFAULT_LOCAL_MODEL).strip(),
         "langfuse_public_key": None,
         "langfuse_secret_key": None,
         "langfuse_base_url": None,

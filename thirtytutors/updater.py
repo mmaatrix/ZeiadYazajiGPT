@@ -31,7 +31,7 @@ from .constants import (
     RELEASES_DIR,
 )
 
-PYPI_PROJECT = "zeiad-english-coach"
+PYPI_PROJECT = "thirtytutors"
 GITHUB_REPO = "wiss84/thirtytutors"
 
 # Each zip's contents are extracted flat into ASSETS_DIR/<key>/ - e.g.
@@ -71,7 +71,7 @@ def is_frozen_build() -> bool:
     """True inside a packaged executable - PyInstaller sets `sys.frozen`
     itself, and that covers both the plain Windows installer and the
     Microsoft Store MSIX (which wraps the exact same PyInstaller build).
-    False for a normal source/editable install or an editable dev
+    False for a normal `pip install thirtytutors` or an editable dev
     checkout, where sys.executable is a real Python interpreter that
     understands `-m <module>` and has pip available on it - neither of
     which holds for a frozen exe. Used by check_app_update (a packaged
@@ -111,7 +111,7 @@ def get_latest_pypi_version(timeout: float = 3.0) -> str | None:
     available."
     """
     url = f"https://pypi.org/pypi/{PYPI_PROJECT}/json"
-    req = urllib.request.Request(url, headers={"User-Agent": "zeiad-english-coach-update-check"})
+    req = urllib.request.Request(url, headers={"User-Agent": "thirtytutors-update-check"})
     try:
         import json
 

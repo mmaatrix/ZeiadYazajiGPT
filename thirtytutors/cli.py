@@ -125,7 +125,7 @@ def _create_shortcut_windows(console) -> None:
     if not pythonw.is_file():
         pythonw = Path(sys.executable)  # fallback - still works, just shows a console
 
-    shortcut_path = _desktop_dir() / "Zeiad English Coach.lnk"
+    shortcut_path = _desktop_dir() / "ThirtyTutors.lnk"
     shell = win32com.client.Dispatch("WScript.Shell")
     shortcut = shell.CreateShortCut(str(shortcut_path))
     shortcut.TargetPath = str(pythonw)
@@ -134,7 +134,7 @@ def _create_shortcut_windows(console) -> None:
     icon = _icon_path()
     if icon.is_file():
         shortcut.IconLocation = f"{icon},0"
-    shortcut.Description = "Zeiad English Coach - AI language tutor by Zeiad Yazaji"
+    shortcut.Description = "ThirtyTutors - AI language tutor"
     shortcut.save()
     console.print(f"[green]\u2713[/green] Desktop shortcut created: {shortcut_path}")
 
@@ -149,7 +149,7 @@ def _create_shortcut_macos(console) -> None:
         console.print("[yellow]Could not locate the thirtytutors executable on PATH - skipping desktop shortcut.[/yellow]")
         return
 
-    app_dir = _desktop_dir() / "Zeiad English Coach.app"
+    app_dir = _desktop_dir() / "ThirtyTutors.app"
     macos_dir = app_dir / "Contents" / "MacOS"
     resources_dir = app_dir / "Contents" / "Resources"
     macos_dir.mkdir(parents=True, exist_ok=True)
@@ -197,7 +197,7 @@ def _create_shortcut_linux(console) -> None:
     entry = (
         "[Desktop Entry]\n"
         "Type=Application\n"
-        "Name=Zeiad English Coach\n"
+        "Name=ThirtyTutors\n"
         f"Exec={thirtytutors_bin}\n"
         f"Icon={icon}\n"
         "Terminal=false\n"
@@ -235,7 +235,7 @@ def _create_desktop_shortcut(console) -> None:
 
 def run_setup(force: bool = False) -> None:
     console = _console()
-    console.print("[bold cyan]Zeiad English Coach setup[/bold cyan]")
+    console.print("[bold cyan]ThirtyTutors setup[/bold cyan]")
     DATA_DIR.mkdir(parents=True, exist_ok=True)
 
     _install_extra_deps(console)
@@ -260,7 +260,7 @@ def run_setup(force: bool = False) -> None:
 
     _SETUP_MARKER.write_text("1", encoding="utf-8")
     console.print(
-        "\n[bold green]Setup complete.[/bold green] Run 'zeiad-english-coach' (or use the new desktop shortcut) to start the app."
+        "\n[bold green]Setup complete.[/bold green] Run 'thirtytutors' (or use the new desktop shortcut) to start the app."
     )
 
 
@@ -308,7 +308,7 @@ def _print_app_update_notice(console) -> None:
         return
     if info.get("update_available"):
         console.print(
-            f"[yellow]A newer Zeiad English Coach version is available: v{info['current']} \u2192 v{info['latest']}.[/yellow] "
+            f"[yellow]A newer ThirtyTutors is available: v{info['current']} \u2192 v{info['latest']}.[/yellow] "
             "Run 'pip install --upgrade thirtytutors' to update, or use the update notification in the app itself."
         )
 
@@ -330,7 +330,7 @@ def cmd_run(args: argparse.Namespace) -> None:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="thirtytutors",
-        description="Zeiad English Coach - a self-hosted, real-time voice AI language tutor by Zeiad Yazaji.",
+        description="ThirtyTutors - a self-hosted, real-time voice AI language tutor.",
     )
     parser.add_argument(
         "--host",

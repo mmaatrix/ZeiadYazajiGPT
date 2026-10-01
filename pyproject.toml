@@ -5,12 +5,12 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "thirtytutors"
 dynamic = ["version"]
-description = "A self-hosted, real-time voice AI language tutor with a 3D talking avatar, powered by OpenAI Realtime."
+description = "A self-hosted, real-time voice AI language tutor with a 3D talking avatar, built on the Gemini Live API."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { file = "LICENSE" }
-authors = [{ name = "Zeiad Yazaji" }]
-keywords = ["language-learning", "ai-tutor", "openai", "voice-ai", "talking-avatar", "speech-to-speech"]
+authors = [{ name = "Wissam Metawee" }]
+keywords = ["language-learning", "ai-tutor", "gemini", "voice-ai", "talking-avatar", "speech-to-speech"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: End Users/Desktop",
@@ -35,11 +35,13 @@ classifiers = [
 dependencies = [
     "fastapi",
     "uvicorn[standard]",
-    "openai>=1.0",
+    "google-genai",
     "websockets",
     "numpy",
     "pywebview",
-        "jinja2>=3.1.4",
+    "protobuf>=4.25.8,<7.0.0",
+    "googleapis-common-protos>=1.5.5",
+    "jinja2>=3.1.4",
     "platformdirs",
     "python-docx>=1.1.0",
     "torch",
@@ -53,19 +55,17 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest", "pytest-asyncio", "pytest-cov", "httpx", "httpx2", "ruff", "langfuse"]
-local = ["faster-whisper>=1.1.0"]
 # Fully opt-in - see observability.py's module docstring. Nothing else in
 # this app imports `langfuse` unconditionally, so installing without this
 # extra is completely unaffected.
 
 [project.urls]
-Homepage = "https://github.com/mmaatrix/ZeiadYazajiGPT"
-Repository = "https://github.com/mmaatrix/ZeiadYazajiGPT"
-Issues = "https://github.com/mmaatrix/ZeiadYazajiGPT/issues"
+Homepage = "https://github.com/wiss84/thirtytutors"
+Repository = "https://github.com/wiss84/thirtytutors"
+Issues = "https://github.com/wiss84/thirtytutors/issues"
 
 [project.scripts]
 thirtytutors = "thirtytutors.cli:main"
-zeiad-english-coach = "thirtytutors.cli:main"
 
 [tool.setuptools.dynamic]
 # Single source of truth for the version is thirtytutors/constants.py's

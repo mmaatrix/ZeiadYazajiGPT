@@ -17,19 +17,24 @@ from platformdirs import user_data_dir
 DEFAULT_DIFFICULTY = "intermediate"
 
 DEFAULT_VOICE = "Kore"
-DEFAULT_NATIVE_LANGUAGE = "Arabic"
-DEFAULT_TARGET_LANGUAGE = "American English"
-DEFAULT_AI_PROVIDER = "local"
-DEFAULT_LOCAL_MODEL = "qwen3:8b"
+DEFAULT_NATIVE_LANGUAGE = "English"
+DEFAULT_TARGET_LANGUAGE = "Polish"
 
-# Non-realtime text model used for periodic rolling-summary folding.
-# This is intentionally separate from the Realtime audio model.
-SUMMARY_MODEL = "gpt-5.6-sol"
+# Non-realtime text model used only for periodic rolling-summary folding
+# (memory.py / summarize_conversation in summarization.py) - cheap
+# free-tier text calls, separate from the Live API models used for the
+# actual conversation. gemini-2.5-flash's free tier is capped at 20 RPD,
+# too low for a summarization call firing every ~15 turns across active
+# conversations; gemini-3.1-flash-lite gives 500 RPD instead and is plenty
+# for this task.
+SUMMARY_MODEL = "gemini-3.1-flash-lite"
 
-# The original ThirtyTutors persona catalog is preserved for the UI.
-# OpenAI Realtime has a smaller built-in voice catalog, so each original
-# persona is mapped to a supported OpenAI voice while keeping the original
-# avatar, alias, gender, pitch, and descriptor data intact.
+# Official voice names + descriptors are from Google's docs
+# (ai.google.dev/gemini-api/docs/speech-generation), which label voices by
+# tone/character. Gender is not an official Google label - this mapping is
+# a manual categorization for the UI's gender-first picker, not a claim
+# Google makes. pitch is a supplementary manual categorization (same
+# spirit as gender), shown alongside descriptor on the avatar-select page.
 VOICE_OPTIONS = [
     {
         "name": "Zephyr",
@@ -245,44 +250,35 @@ VOICE_OPTIONS = [
     },
 ]
 
-# OpenAI Realtime voice mapping. The avatar/persona catalog above is kept
-# unchanged; multiple personas may intentionally share a supported voice.
-_OPENAI_FEMALE_VOICES = ("marin", "coral", "sage", "shimmer", "cedar")
-_OPENAI_MALE_VOICES = ("alloy", "ash", "ballad", "echo", "verse")
-_voice_f_index = 0
-_voice_m_index = 0
-VOICE_NAME_TO_API = {}
-for _voice in VOICE_OPTIONS:
-    if _voice.get("gender") == "Female":
-        VOICE_NAME_TO_API[_voice["name"]] = _OPENAI_FEMALE_VOICES[
-            _voice_f_index % len(_OPENAI_FEMALE_VOICES)
-        ]
-        _voice_f_index += 1
-    else:
-        VOICE_NAME_TO_API[_voice["name"]] = _OPENAI_MALE_VOICES[
-            _voice_m_index % len(_OPENAI_MALE_VOICES)
-        ]
-        _voice_m_index += 1
+# Voice name used when calling the Google Live API. Most entries use their
+# own `name`, but a few aliases map to a different underlying Google voice
+# so the avatar's photo and local sample stay intact while the API still
+# receives a valid voice identifier.
+VOICE_NAME_TO_API = {v["name"]: v.get("api_voice_name") or v["name"] for v in VOICE_OPTIONS}
 
 
 def get_api_voice_name(voice_name: str) -> str:
-    return VOICE_NAME_TO_API.get(voice_name, "marin")
+    return VOICE_NAME_TO_API.get(voice_name, voice_name)
 
 
-# OpenAI Realtime model choices. The flagship model is first, matching
-# ThirtyTutors' primary-model-first behavior; the mini model is the fallback.
+# Live API model choices. Rate limits are what's visible on the free tier as
+# of mid-2026 and can change - shown in the UI so the choice is informed.
+#
+# gemini-2.5-flash-native-audio-latest was removed entirely (not just
+# deprioritized) after most of the duplicate/repeated-response issues
+# logged in design_plans/issues.md turned out to happen on it specifically
+# - see that file for the actual incidents. With only one entry here,
+# live_session.py's fallback_model selection naturally computes to None
+# (nothing else left to fall back to), so this also stops it from ever
+# being used as a silent fallback, not just as a direct UI choice. See
+# profiles_store.migrate_legacy_model_name for what happens to
+# conversations that were already created while it was still an option.
 MODEL_OPTIONS = [
     {
-        "id": "gpt-realtime-2.1",
-        "label": "GPT-Realtime-2.1",
-        "rate_limit_note": "Current OpenAI Realtime flagship speech-to-speech model",
-        "supports_affective_dialog": True,
-    },
-    {
-        "id": "gpt-realtime-2.1-mini",
-        "label": "GPT-Realtime-2.1 Mini (Fallback)",
-        "rate_limit_note": "Lower-cost OpenAI Realtime fallback",
-        "supports_affective_dialog": True,
+        "id": "gemini-3.1-flash-live-preview",
+        "label": "Gemini 3 Flash Live",
+        "rate_limit_note": "65K TPM",
+        "supports_affective_dialog": False,
     },
 ]
 DEFAULT_MODEL = MODEL_OPTIONS[0]["id"]
@@ -395,8 +391,6 @@ PROFILE_EDITABLE_FIELDS = (
     "model_name",
     "active_conversation_id",
     "api_key",
-    "ai_provider",
-    "local_model",
     "mic_calibrations",
     "default_difficulty",
     "langfuse_public_key",

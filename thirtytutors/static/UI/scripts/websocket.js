@@ -26,7 +26,6 @@ let backoffMs = 3000;
 const BACKOFF_CAP_MS = 30000;
 let onlineListenerAttached = false;
 let consecutiveFailures = 0;
-let activeSessionProvider = null;
 const FAST_RETRY_ATTEMPTS = 2;
 
 function connectWebSocket() {
@@ -148,13 +147,13 @@ function connectWebSocket() {
       // this signal would only ever be truncating the tutor's speech in
       // response to a phantom trigger.
     } else if (msg.type === 'transcript_in') {
-      // Local Free uses faster-whisper, so show exactly what it heard. This
-      // makes accent/transcription problems visible instead of making a bad
-      // answer look like an LLM reasoning failure. Keep the historical cloud
-      // behavior unchanged.
-      if (activeSessionProvider === 'local') {
-        appendOrCreateBubble('user', msg.text);
-      }
+      // Deliberately not rendered - see transcript.js's renderConversationTranscript
+      // for the matching change on the history-reload path, and the reasoning
+      // (Gemini's own input_audio_transcription is frequently badly garbled for
+      // non-native/accented speech, unrelated to whether the model actually
+      // understood the audio correctly - showing it was more confusing than
+      // useful). The message itself still arrives and is still stored/
+      // summarized exactly as before - this only skips the UI bubble.
     } else if (msg.type === 'transcript_out') {
       appendOrCreateBubble('tutor', msg.text);
     } else if (msg.type === 'turn_complete') {
@@ -168,7 +167,6 @@ function connectWebSocket() {
     } else if (msg.type === 'quiz_resume') {
       if (window.openQuizDrawer) window.openQuizDrawer(msg, { resumed: true });
     } else if (msg.type === 'session_status') {
-      activeSessionProvider = msg.provider || (String(msg.model_name || '').startsWith('Local Free') ? 'local' : 'openai');
       showSessionStatus(msg.resumed);
       setModelLampState(msg.unavailable ? 'unavailable' : 'connected', msg.model_name);
       if (window.resetPlaybackClock) window.resetPlaybackClock();
