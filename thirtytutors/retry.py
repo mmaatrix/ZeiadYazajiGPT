@@ -48,7 +48,12 @@ def is_network_error(e: Exception) -> bool:
 def is_rate_limit_error(e: Exception) -> bool:
     """True specifically for a 429/rate-limit quota error."""
     text = str(e).upper()
-    return type(e).__name__ == "RateLimitError" or "429" in text or "RATE LIMIT" in text
+    return (
+        type(e).__name__ == "RateLimitError"
+        or "429" in text
+        or "RATE LIMIT" in text
+        or "RESOURCE_EXHAUSTED" in text
+    )
 
 
 def parse_retry_delay(text: str) -> float | None:
