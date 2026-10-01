@@ -29,7 +29,7 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from thirtytutors import live_session, memory, quizzes
+from ZeiadYazajiGPT import live_session, memory, quizzes
 
 pytestmark = pytest.mark.integration
 

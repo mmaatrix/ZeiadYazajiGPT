@@ -14,7 +14,7 @@ a test run.
 
 import pytest
 
-from thirtytutors import observability
+from ZeiadYazajiGPT import observability
 
 
 class _FakeObservation:

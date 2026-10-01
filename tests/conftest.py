@@ -22,7 +22,7 @@ def pytest_configure(config):
 # Data-directory isolation
 # ---------------------------------------------------------------------------
 # constants.py resolves DATA_DIR via platformdirs (the real, OS-managed
-# ThirtyTutors data directory) - tests must never touch that. memory.py,
+# ZeiadYazajiGPT data directory) - tests must never touch that. memory.py,
 # quizzes.py, and profiles_store.py each did `from .constants import
 # DATA_DIR` (and their own derived paths), which copies the *value* into
 # their own module namespace at import time - patching constants.DATA_DIR
@@ -33,8 +33,8 @@ def pytest_configure(config):
 
 @pytest.fixture(autouse=True)
 def isolated_data_dir(tmp_path, monkeypatch):
-    from thirtytutors import constants, memory, profiles_store, quizzes
-    from thirtytutors.speech_detection import enrollment
+    from ZeiadYazajiGPT import constants, memory, profiles_store, quizzes
+    from ZeiadYazajiGPT.speech_detection import enrollment
 
     data_dir = tmp_path / "data"
     data_dir.mkdir()
@@ -69,7 +69,7 @@ def isolated_data_dir(tmp_path, monkeypatch):
 
 @pytest.fixture(autouse=True)
 def isolated_observability(monkeypatch):
-    from thirtytutors import observability
+    from ZeiadYazajiGPT import observability
 
     monkeypatch.delenv("LANGFUSE_PUBLIC_KEY", raising=False)
     monkeypatch.delenv("LANGFUSE_SECRET_KEY", raising=False)
@@ -117,7 +117,7 @@ def _fake_embed(audio: np.ndarray) -> np.ndarray:
 
 @pytest.fixture
 def fake_speaker_backend(monkeypatch):
-    from thirtytutors.speech_detection import resemblyzer_backend
+    from ZeiadYazajiGPT.speech_detection import resemblyzer_backend
 
     monkeypatch.setattr(resemblyzer_backend, "embed", _fake_embed)
     monkeypatch.setattr(resemblyzer_backend, "get_model", lambda: object())
@@ -136,7 +136,7 @@ def make_profile(isolated_data_dir):
     separately in test_routes_api.py) and returns it. Callers can override
     any field via kwargs.
     """
-    from thirtytutors.profiles_store import load_profiles, save_profiles
+    from ZeiadYazajiGPT.profiles_store import load_profiles, save_profiles
 
     def _make(**overrides):
         import uuid
@@ -170,7 +170,7 @@ def make_conversation(isolated_data_dir):
     """Creates a conversation directly via memory.py. Callers can override
     any config field via kwargs (merged into a sensible default config).
     """
-    from thirtytutors import memory
+    from ZeiadYazajiGPT import memory
 
     def _make(profile_id: str, name: str | None = None, **config_overrides):
         config = {

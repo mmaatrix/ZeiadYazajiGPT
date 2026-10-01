@@ -13,7 +13,7 @@ shouldn't break a test suite.
 
 import pytest
 
-from thirtytutors.tutor_tools import build_quiz_tool
+from ZeiadYazajiGPT.tutor_tools import build_quiz_tool
 
 pytestmark = pytest.mark.unit
 
