@@ -145,6 +145,8 @@ def make_profile(isolated_data_dir):
             "id": str(uuid.uuid4()),
             "name": "Test Profile",
             "api_key": None,
+            "ai_provider": "openai",
+            "local_model": "qwen3:8b",
             "mic_device_id": None,
             "mic_label": None,
             "voice_name": "Kore",
