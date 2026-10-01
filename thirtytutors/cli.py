@@ -260,7 +260,7 @@ def run_setup(force: bool = False) -> None:
 
     _SETUP_MARKER.write_text("1", encoding="utf-8")
     console.print(
-        "\n[bold green]Setup complete.[/bold green] Run 'thirtytutors' (or use the new desktop shortcut) to start the app."
+        "\n[bold green]Setup complete.[/bold green] Run 'zeiad-english-coach' (or use the new desktop shortcut) to start the app."
     )
 
 
