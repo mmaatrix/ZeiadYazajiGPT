@@ -60,9 +60,9 @@ dev = ["pytest", "pytest-asyncio", "pytest-cov", "httpx", "httpx2", "ruff", "lan
 # extra is completely unaffected.
 
 [project.urls]
-Homepage = "https://github.com/wiss84/ZeiadYazajiGPT"
-Repository = "https://github.com/wiss84/ZeiadYazajiGPT"
-Issues = "https://github.com/wiss84/ZeiadYazajiGPT/issues"
+Homepage = "https://github.com/mmaatrix/ZeiadYazajiGPT"
+Repository = "https://github.com/mmaatrix/ZeiadYazajiGPT"
+Issues = "https://github.com/mmaatrix/ZeiadYazajiGPT/issues"
 
 [project.scripts]
 ZeiadYazajiGPT = "ZeiadYazajiGPT.cli:main"

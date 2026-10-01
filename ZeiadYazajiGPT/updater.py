@@ -32,7 +32,7 @@ from .constants import (
 )
 
 PYPI_PROJECT = "ZeiadYazajiGPT"
-GITHUB_REPO = "wiss84/ZeiadYazajiGPT"
+GITHUB_REPO = "mmaatrix/ZeiadYazajiGPT"
 
 # Each zip's contents are extracted flat into ASSETS_DIR/<key>/ - e.g.
 # avatars.zip should contain the .glb files directly at its root, not

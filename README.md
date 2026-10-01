@@ -2,7 +2,7 @@
 
 **An AI language tutor that talks with you, remembers you, and has a face.**
 
-![ZeiadYazajiGPT AI tutor conversation demo](https://raw.githubusercontent.com/wiss84/ZeiadYazajiGPT/main/ZeiadYazajiGPT/static/images/demo.gif)
+![ZeiadYazajiGPT AI tutor conversation demo](https://raw.githubusercontent.com/mmaatrix/ZeiadYazajiGPT/main/ZeiadYazajiGPT/static/images/demo.gif)
 
 Self-hosted. Open-source. Powered by Gemini Live API.
 
@@ -47,19 +47,19 @@ ZeiadYazajiGPT is built around the Gemini **Live API** specifically because it's
 ## Screenshots
 
 ### Create a new profile
-![Create Profile](https://raw.githubusercontent.com/wiss84/ZeiadYazajiGPT/main/ZeiadYazajiGPT/static/images/home.webp)
+![Create Profile](https://raw.githubusercontent.com/mmaatrix/ZeiadYazajiGPT/main/ZeiadYazajiGPT/static/images/home.webp)
 
 ### Login to existing profile
-![Profile Page](https://raw.githubusercontent.com/wiss84/ZeiadYazajiGPT/main/ZeiadYazajiGPT/static/images/Create_profile.webp)
+![Profile Page](https://raw.githubusercontent.com/mmaatrix/ZeiadYazajiGPT/main/ZeiadYazajiGPT/static/images/Create_profile.webp)
 
 ### Avatar & voice selection
-![Profile Page](https://raw.githubusercontent.com/wiss84/ZeiadYazajiGPT/main/ZeiadYazajiGPT/static/images/Existing_profile.webp)
+![Profile Page](https://raw.githubusercontent.com/mmaatrix/ZeiadYazajiGPT/main/ZeiadYazajiGPT/static/images/Existing_profile.webp)
 
 ### Learning Session Page
-![Profile Page](https://raw.githubusercontent.com/wiss84/ZeiadYazajiGPT/main/ZeiadYazajiGPT/static/images/Pick_Tutor.webp)
+![Profile Page](https://raw.githubusercontent.com/mmaatrix/ZeiadYazajiGPT/main/ZeiadYazajiGPT/static/images/Pick_Tutor.webp)
 
 ### Learning Session (Full Screen) Page
-![Profile Page](https://raw.githubusercontent.com/wiss84/ZeiadYazajiGPT/main/ZeiadYazajiGPT/static/images/Session.webp)
+![Profile Page](https://raw.githubusercontent.com/mmaatrix/ZeiadYazajiGPT/main/ZeiadYazajiGPT/static/images/Session.webp)
 
 ---
 
@@ -158,7 +158,7 @@ Avatar `.glb` models, voice `.wav` samples, and tile `.webp` photos are download
 Issues and pull requests are welcome. For local development:
 
 ```bash
-git clone https://github.com/wiss84/ZeiadYazajiGPT.git
+git clone https://github.com/mmaatrix/ZeiadYazajiGPT.git
 cd ZeiadYazajiGPT
 conda create -n ZeiadYazajiGPT python=3.11 -y
 conda activate ZeiadYazajiGPT

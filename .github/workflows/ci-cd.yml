@@ -96,7 +96,7 @@ jobs:
   # "trusted publisher" flow (no API token stored as a secret). This needs a
   # one-time setup on PyPI's side first: on the project's PyPI page ->
   # Publishing -> add a trusted publisher pointing at this exact repo
-  # (wiss84/ZeiadYazajiGPT), workflow file (ci-cd.yml), and environment name
+  # (mmaatrix/ZeiadYazajiGPT), workflow file (ci-cd.yml), and environment name
   # ---------------------------------------------------------------------------
   publish:
     name: Publish to PyPI
