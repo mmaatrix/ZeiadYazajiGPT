@@ -26,6 +26,10 @@ class FakeOpenAIWebSocket:
         self.sent = []
         self.closed = False
         self._events = asyncio.Queue()
+        self._events.put_nowait({
+            "type": "session.created",
+            "session": {"type": "realtime", "id": "sess-test"},
+        })
         self._response_count = 0
         self._tool_mode = tool_mode
         self._queue_task = None
