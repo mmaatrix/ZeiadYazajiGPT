@@ -204,6 +204,21 @@ async def _connect_openai(api_key: str, model_name: str, profile: dict):
         return await websockets.connect(url, extra_headers=headers, **kwargs)
 
 
+async def _wait_for_session_created(openai_ws) -> dict:
+    """Wait for the Realtime server's initial readiness event before configuring the session."""
+    raw = await openai_ws.recv()
+    event = json.loads(raw)
+    event_type = event.get("type")
+    if event_type == "session.created":
+        return event
+    if event_type == "error":
+        error = event.get("error") or {}
+        raise RuntimeError(error.get("message") or "OpenAI Realtime rejected the session.")
+    raise RuntimeError(
+        f"OpenAI Realtime returned unexpected first event: {event_type or 'unknown'}"
+    )
+
+
 async def _configure_session(
     openai_ws,
     *,
@@ -375,6 +390,7 @@ async def ws_session(websocket: WebSocket):
     for candidate_model in model_candidates:
         try:
             openai_ws = await _connect_openai(profile.get("api_key"), candidate_model, profile)
+            await _wait_for_session_created(openai_ws)
             await _configure_session(
                 openai_ws,
                 profile=profile,
@@ -392,6 +408,11 @@ async def ws_session(websocket: WebSocket):
                 f"[openai_ws_session] model {candidate_model} failed: "
                 f"{type(exc).__name__}: {exc}"
             )
+            # Authentication failures affect the key, not the selected model;
+            # retrying the same invalid credential against the fallback model
+            # only adds latency and duplicate error noise.
+            if "INVALID_API_KEY" in str(exc).upper() or "INVALID API KEY" in str(exc).upper() or "401" in str(exc):
+                break
             if openai_ws is not None:
                 try:
                     await openai_ws.close()
