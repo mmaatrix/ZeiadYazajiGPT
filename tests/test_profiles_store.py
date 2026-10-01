@@ -7,7 +7,7 @@ test_routes_api.py, not here.
 
 import pytest
 
-from thirtytutors import memory, profiles_store
+from ZeiadYazajiGPT import memory, profiles_store
 
 pytestmark = pytest.mark.integration
 
