@@ -7,7 +7,7 @@ point.
 
 import pytest
 
-from thirtytutors import memory
+from ZeiadYazajiGPT import memory
 
 pytestmark = pytest.mark.integration
 
