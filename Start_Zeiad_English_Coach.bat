@@ -34,9 +34,6 @@ if errorlevel 1 goto :error
 python -m pip install -e .
 if errorlevel 1 goto :error
 
-python -m thirtytutors setup
-if errorlevel 1 goto :error
-
 python -m thirtytutors
 if errorlevel 1 goto :error
 exit /b 0
