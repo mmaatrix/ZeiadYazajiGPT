@@ -13,6 +13,9 @@
 
 const firstNameInput = document.getElementById('firstNameInput');
 const nativeLanguageInput = document.getElementById('nativeLanguageInput');
+const aiProviderSelect = document.getElementById('aiProviderSelect');
+const localAiHint = document.getElementById('localAiHint');
+const openAiSetupFields = document.getElementById('openAiSetupFields');
 const apiKeyInput = document.getElementById('apiKeyInput');
 const toggleApiKeyBtn = document.getElementById('toggleApiKeyBtn');
 const modelSelect = document.getElementById('modelSelect');
@@ -61,8 +64,10 @@ async function restoreDraft() {
   }
   firstNameInput.value = draft.name || '';
   nativeLanguageInput.value = draft.native_language || '';
+  aiProviderSelect.value = draft.ai_provider || 'local';
   apiKeyInput.value = draft.api_key || '';
   if (draft.model_name) modelSelect.value = draft.model_name;
+  updateProviderUi();
 
   if (draft.profile_id) {
     try {
@@ -81,6 +86,7 @@ function saveDraft() {
     name: firstNameInput.value.trim(),
     native_language: nativeLanguageInput.value.trim(),
     api_key: apiKeyInput.value.trim(),
+    ai_provider: aiProviderSelect.value,
     model_name: modelSelect.value,
     profile_id: landingProfile ? landingProfile.id : null,
     calibrated,
@@ -110,6 +116,20 @@ function updateModelHint() {
   modelHint.textContent = `${m.rate_limit_note}${m.supports_affective_dialog ? ' - supports emotional tone (affective dialog)' : ' - lower latency, no affective dialog'}`;
 }
 modelSelect.addEventListener('change', updateModelHint);
+
+function updateProviderUi() {
+  const isLocal = aiProviderSelect.value === 'local';
+  openAiSetupFields.hidden = isLocal;
+  localAiHint.textContent = isLocal
+    ? 'Local Free uses Ollama + Qwen3 8B on this PC. No OpenAI API balance is required.'
+    : 'OpenAI Realtime requires a separately billed OpenAI API key.';
+  updateNextEnabled();
+}
+
+aiProviderSelect.addEventListener('change', () => {
+  updateProviderUi();
+  saveDraft();
+});
 
 // --- API key visibility toggle (same pattern as the learning page's
 // sidebar - kept in sync deliberately, not shared code, since these are
@@ -198,10 +218,11 @@ apiKeyTutorialOverlay.addEventListener('click', (e) => {
 // --- Validation + profile creation ---
 
 function updateNextEnabled() {
+  const providerReady = aiProviderSelect.value === 'local' || apiKeyInput.value.trim();
   nextBtn.disabled = !(
     firstNameInput.value.trim() &&
     nativeLanguageInput.value.trim() &&
-    apiKeyInput.value.trim() &&
+    providerReady &&
     calibrated
   );
 }
@@ -229,15 +250,18 @@ async function ensureProfileCreated() {
   const name = firstNameInput.value.trim();
   const nativeLanguage = nativeLanguageInput.value.trim();
   const apiKey = apiKeyInput.value.trim();
-  if (!name || !nativeLanguage || !apiKey) {
-    calibrateMicStatus.textContent = 'Fill in your name, native language, and API key first.';
+  const aiProvider = aiProviderSelect.value || 'local';
+  if (!name || !nativeLanguage || (aiProvider === 'openai' && !apiKey)) {
+    calibrateMicStatus.textContent = aiProvider === 'openai'
+      ? 'Fill in your name, native language, and OpenAI API key first.'
+      : 'Fill in your name and native language first.';
     return null;
   }
 
   const createRes = await fetch('/api/profiles', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, api_key: apiKey }),
+    body: JSON.stringify({ name, api_key: apiKey || null, ai_provider: aiProvider, local_model: 'qwen3:8b' }),
   });
   if (!createRes.ok) {
     calibrateMicStatus.textContent = 'Could not create your profile - try again.';
@@ -251,7 +275,12 @@ async function ensureProfileCreated() {
   await fetch(`/api/profiles/${profile.id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ native_language: nativeLanguage, model_name: modelSelect.value }),
+    body: JSON.stringify({
+      native_language: nativeLanguage,
+      model_name: modelSelect.value,
+      ai_provider: aiProvider,
+      local_model: 'qwen3:8b',
+    }),
   }).catch(() => {});
 
   landingProfile = profile;
@@ -377,7 +406,9 @@ nextBtn.addEventListener('click', async () => {
     body: JSON.stringify({
       name: firstNameInput.value.trim(),
       native_language: nativeLanguageInput.value.trim(),
-      api_key: apiKeyInput.value.trim(),
+      api_key: apiKeyInput.value.trim() || null,
+      ai_provider: aiProviderSelect.value || 'local',
+      local_model: 'qwen3:8b',
       model_name: modelSelect.value,
     }),
   }).catch(() => {});
@@ -397,6 +428,7 @@ async function init() {
   await loadModels();
   await restoreDraft();
   await loadMics();
+  updateProviderUi();
   updateNextEnabled();
 }
 init();
