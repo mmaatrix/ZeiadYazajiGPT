@@ -8,6 +8,17 @@ Self-hosted. Open-source. Powered by OpenAI Realtime API.
 
 ---
 
+## Local Free mode (no OpenAI API bill)
+
+Zeiad English Coach can run its conversation stack locally on Windows:
+
+- **LLM:** Ollama + `qwen3:8b`
+- **Speech recognition:** `faster-whisper` (multilingual `small`, CPU int8)
+- **Tutor voice:** Windows local US-English speech synthesis
+- **OpenAI Realtime:** optional; only used when selected in Settings
+
+After installing Ollama and pulling `qwen3:8b`, run `Setup_Local_Free_Mode.bat` once. Then choose **Settings → Account → Local Free - Ollama / Qwen3 8B**.
+
 ## What is this?
 
 Zeiad English Coach is a real-time voice conversation partner for learning a language, not a flashcard app and not a text chatbot. You hold down a key, speak, and a 3D avatar answers back out loud — in the language you're learning, correcting your mistakes, remembering what you've covered, and reacting with actual facial expressions while it talks.
