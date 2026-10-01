@@ -60,12 +60,21 @@ def test_build_config_declares_both_mood_and_quiz_tools():
             taught_vocab=[],
         )
     )
+    session = sock.events[0]["session"]
     names = {
         tool["name"]
-        for tool in sock.events[0]["session"]["tools"]
+        for tool in session["tools"]
         if tool.get("type") == "function"
     }
     assert names == {"set_mood", "start_quiz"}
+    assert session["type"] == "realtime"
+    assert session["output_modalities"] == ["audio"]
+    assert session["audio"]["input"]["format"] == {"type": "audio/pcm", "rate": 24000}
+    assert session["audio"]["input"]["turn_detection"] is None
+    assert session["audio"]["input"]["transcription"]["model"] == "gpt-live-transcribe"
+    assert session["audio"]["input"]["transcription"]["languages"] == ["en", "ar"]
+    assert session["audio"]["output"]["format"] == {"type": "audio/pcm", "rate": 24000}
+    assert session["audio"]["output"]["voice"]
 
 
 def test_build_config_omits_spaced_repetition_block_without_review_terms():
@@ -124,7 +133,7 @@ def test_quiz_tool_has_no_top_level_quiz_type():
 
 def test_quiz_tool_item_schema_requires_every_field():
     """The actual fix for the correct_answers omission bug: rather than two
-    mechanic-specific optional field sets (which Gemini's schema can't make
+    mechanic-specific optional field sets (which the Realtime tool schema can't make
     conditionally required), every item has one flat, fully-required field
     set disambiguated by item_type - so correct_answers can never be
     silently dropped from a fill_blank_dragdrop item."""
