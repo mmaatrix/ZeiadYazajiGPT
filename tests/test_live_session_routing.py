@@ -8,7 +8,6 @@ real API key or network connection is used.
 import asyncio
 import base64
 import json
-from types import SimpleNamespace
 
 import pytest
 from fastapi import FastAPI
