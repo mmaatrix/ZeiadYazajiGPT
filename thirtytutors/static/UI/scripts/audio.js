@@ -39,6 +39,7 @@ let playbackContext = null;
 let playbackAnalyser = null;
 let playbackBus = null;
 let nextPlaybackTime = 0;
+const activePlaybackSources = new Set();
 
 // When the avatar drawer (avatarDrawer.js, a separate ES module) has a
 // TalkingHead + HeadAudio ready, playback routes through the avatar's own
@@ -96,7 +97,7 @@ let pcmBufferedSamples = 0;
 // isRecording: while active, EVERY worklet callback feeds it (mic never
 // needs a press), sent as a distinct 'handsfree_chunk' message type so the
 // backend can run its own windowing/speaker-verification gate in front of
-// forwarding anything to Gemini (see live_session.py's module docstring).
+// forwarding anything to the live tutor (see live_session.py's module docstring).
 let handsFreeActive = false;
 let hfBuffer = [];
 let hfBufferedSamples = 0;
@@ -164,9 +165,22 @@ function playAudioChunk(b64data) {
   gainNode.gain.setValueAtTime(1, startAt + buffer.duration - fadeS);
   gainNode.gain.linearRampToValueAtTime(0, startAt + buffer.duration);
 
+  source.onended = () => activePlaybackSources.delete(source);
+  activePlaybackSources.add(source);
   source.start(startAt);
   nextPlaybackTime = startAt + buffer.duration;
 }
+
+function interruptTutorPlayback() {
+  const ctx = avatarAudioSink ? avatarAudioSink.audioCtx : playbackContext;
+  for (const source of activePlaybackSources) {
+    try { source.stop(0); } catch (_) {}
+  }
+  activePlaybackSources.clear();
+  if (ctx) nextPlaybackTime = ctx.currentTime;
+  if (window.setAvatarMood) window.setAvatarMood('neutral');
+}
+window.interruptTutorPlayback = interruptTutorPlayback;
 
 function isTutorSpeaking() {
   const ctx = avatarAudioSink ? avatarAudioSink.audioCtx : playbackContext;
@@ -178,7 +192,7 @@ function isTutorSpeaking() {
 // always means either the very first connect (nothing scheduled yet, so
 // this is a no-op - ctx is still null at that point) or a reconnect
 // (go_away/error - see live_session.py's module docstring) that replaced
-// the underlying Gemini session entirely. Without this, nextPlaybackTime
+// the underlying live session entirely. Without this, nextPlaybackTime
 // keeps counting from wherever the OLD session's last audio chunk left
 // it - if that session was cut off mid-speech (the common case for an
 // error-triggered reconnect), the NEW session's first audio chunk would
@@ -271,7 +285,7 @@ function ensureMicReady() {
       // hands-free is a continuous mode with no per-turn press, so the mic
       // stays open through the tutor's reply; without this, that reply
       // would get picked up by the mic and forwarded straight back to
-      // Gemini as if the student had spoken over it. Mirrors the backend's
+      // the tutor as if the student had spoken over it. Mirrors the backend's
       // own drop-while-quiz-active pattern (_VOICE_MESSAGE_TYPES in
       // live_session.py), just gated on speech instead of quiz state.
       if (handsFreeActive && !isTutorSpeaking()) {
@@ -287,7 +301,7 @@ function ensureMicReady() {
 }
 
 // --- Reconnect audio replay (defense-in-depth) ---
-// The backend now reconnects go_away and dropped-Gemini-session errors
+// The backend now reconnects go_away and dropped-live-session errors
 // in place without ever closing this browser websocket (see
 // live_session.py's module docstring), so under normal operation none of
 // this fires - the backend's own buffered-audio replay already covers
@@ -338,8 +352,8 @@ async function startRecording() {
   if (isRecording) return;
   if (quizActive) { showError('Finish or skip the quiz to use push-to-talk.'); return; }
   if (handsFreeActive) { showError('Turn off hands-free mode to use push-to-talk.'); return; }
-  if (isTutorSpeaking()) { showError('Wait for the tutor to finish speaking.'); return; }
   if (!ws || ws.readyState !== WebSocket.OPEN) { showError('Not connected yet.'); return; }
+  if (isTutorSpeaking()) interruptTutorPlayback();
   showError('');
 
   try {
@@ -396,7 +410,7 @@ function isTypingTarget(el) {
 document.addEventListener('keydown', (e) => {
   if (e.code !== 'Space' || e.repeat || isTypingTarget(e.target)) return;
   e.preventDefault(); // stop the page from scrolling on spacebar
-  if (quizActive || isTutorSpeaking()) return; // startRecording() also gates on these, but skip the error/log noise entirely here
+  if (quizActive) return;
   startRecording();
 });
 
